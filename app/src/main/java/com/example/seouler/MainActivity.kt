@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     var myChattingRoomList : ArrayList<ChattingRoom> = ArrayList()
-    var myChattingRoomMessage : HashMap<Long, ArrayList<Message>> = HashMap()
+    var myChattingRoomMessageList : ArrayList<ArrayList<Message>> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +107,32 @@ class MainActivity : AppCompatActivity() {
 
     fun loadMyChattingRoomMessage(USERID: Long){
         /* myChattingRoomList에서 roomId를 Key값으로, Message 객체를 value값으로 하여 DB로부터 데이터 가져옴. */
+        var msgRef = FirebaseDatabase.getInstance().getReference("message")
+        val msgValueEventListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
 
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                myChattingRoomMessageList.clear()
+                for(i in 0 until myChattingRoomList.count()){
+                    for(msgSnapshot in dataSnapshot.children){
+                        if(myChattingRoomList[i].roomId == msgSnapshot.child("roomId") as Long){
+                            myChattingRoomMessageList[i].add(
+                                Message(
+                                msgSnapshot.child("messageId") as Long,
+                                msgSnapshot.child("roomId") as Long,
+                                msgSnapshot.child("sender") as Long,
+                                msgSnapshot.child("text").value.toString(),
+                                msgSnapshot.child("timestamp") as Long)
+                            )
+                        }
+                    }
+                }
+
+            }
+
+        }
+        msgRef.addValueEventListener(msgValueEventListener)
     }
 }

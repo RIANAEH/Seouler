@@ -19,6 +19,8 @@
 
         <activity android:name=".ChattingHomeActivity">
         </activity>
+        <activity android:name=".ChattingMessageActivity">
+        </activity>
 
     </application>
 
