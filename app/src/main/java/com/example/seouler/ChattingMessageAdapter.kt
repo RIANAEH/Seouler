@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.rvitem_chattingmessage.view.*
 import kotlinx.android.synthetic.main.rvitem_chattingmessage_me.view.*
 
 class ChattingMessageAdapter(val context: Context, var listData : ArrayList<Message>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-
+    var USERID : Long = 0
     override fun getItemCount(): Int {
         return listData.size
     }
@@ -18,29 +18,29 @@ class ChattingMessageAdapter(val context: Context, var listData : ArrayList<Mess
         var view : View
         if(viewType == 1){
             val view = LayoutInflater.from(parent.context).inflate(R.layout.rvitem_chattingmessage, parent, false)
-            return LogHolder(view)
+            return MessageHolder(view)
         }
         else{
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.rvitem_chattingmessage, parent, false)
-            return MyLogHolder(view)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.rvitem_chattingmessage_me, parent, false)
+            return MyMessageHolder(view)
         }
 
     }
 
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val log = listData.get(position)
-        if(viewHolder is LogHolder){
-            viewHolder.setChattingRoom(log)
+        val msg = listData.get(position)
+        if(viewHolder is MessageHolder){
+            viewHolder.setChattingRoom(msg)
         }
-        else if(viewHolder is MyLogHolder){
-            viewHolder.setChattingRoom(log)
+        else if(viewHolder is MyMessageHolder){
+            viewHolder.setChattingRoom(msg)
         }
 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(position%2 == 0){
+        return if(USERID != listData.get(position).sender){
             1
         } else {
             2
@@ -48,17 +48,59 @@ class ChattingMessageAdapter(val context: Context, var listData : ArrayList<Mess
     }
 
 }
-class LogHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class MessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     fun setChattingRoom(msg : Message){
         itemView.chattingMessageNameTextView.text = "${msg.sender}"
         itemView.chattingMessageTextView.text = "${msg.text}"
-        itemView.chattingMessageTimestampTextView.text = "${msg.timestamp +1} min ago"
+        var time : Long = ((System.currentTimeMillis()-msg.timestamp)/1000)/60
+        var timeMessage : String = ""
+        //경과 시간이 60분보다 크다면
+        if(time >= 60){
+            time /= 60
+            if(time >= 24){
+                time /= 24
+                if(time >= 3){
+                    timeMessage = "Long ago"
+                }
+                else{
+                    timeMessage = "${time} day ago"
+                }
+            }
+            else {
+                timeMessage = "${time} hour ago"
+            }
+        }
+        else{
+            timeMessage = "${time} min ago"
+        }
+        itemView.chattingMessageTimestampTextView.text = timeMessage
 
     }
 }
-class MyLogHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class MyMessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     fun setChattingRoom(msg : Message){
         itemView.chattingMessageMeTextView.text = "${msg.text}"
-        itemView.chattingMessageMeTimestampTextView.text = "${msg.timestamp +1} min ago"
+        var time : Long = ((System.currentTimeMillis()-msg.timestamp)/1000)/60
+        var timeMessage : String = ""
+        //경과 시간이 60분보다 크다면
+        if(time >= 60){
+            time /= 60
+            if(time >= 24){
+                time /= 24
+                if(time >= 3){
+                    timeMessage = "Long ago"
+                }
+                else{
+                    timeMessage = "${time} day ago"
+                }
+            }
+            else {
+                timeMessage = "${time} hour ago"
+            }
+        }
+        else{
+            timeMessage = "${time} min ago"
+        }
+        itemView.chattingMessageMeTimestampTextView.text = timeMessage
     }
 }

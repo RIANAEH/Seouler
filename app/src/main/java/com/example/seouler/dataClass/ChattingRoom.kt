@@ -13,6 +13,7 @@ data class ChattingRoom(var roomId : Long,
                         var locationX : Double,
                         var locationY : Double,
                         var locationCertified : Boolean,
-                        var timestamp : Long) : Serializable {
+                        var timestamp : Long,
+                        var uid : Long) : Serializable {
 
 }
