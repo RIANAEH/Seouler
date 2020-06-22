@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.seouler.dataClass.ChattingRoom
+import com.example.seouler.dataClass.Message
+import com.example.seouler.dataClass.Participation
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -12,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     var myChattingRoomList : ArrayList<ChattingRoom> = ArrayList()
+    var myChattingRoomMessage : HashMap<Long, ArrayList<Message>> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         /* MainActivity에서 먼저 DB로부터 필요한 데이터 읽어오는 과정 필요 */
         loadMyChattingRoom(USERID)
+        loadMyChattingRoomMessage(USERID)
         Thread.sleep(2000)
 
         mainChattingButton.setOnClickListener {
@@ -45,7 +50,12 @@ class MainActivity : AppCompatActivity() {
                     Log.d("MainActivity", partSnapshot.toString())
                     if(USERID == partSnapshot.child("userId").value as Long){
                         Log.d("MainActivity","C read userId : ${partSnapshot.child("userId").value as Long}")
-                        partData.add(Participation(partSnapshot.child("userId").value as Long, partSnapshot.child("roomId").value as Long))
+                        partData.add(
+                            Participation(
+                                partSnapshot.child("userId").value as Long,
+                                partSnapshot.child("roomId").value as Long
+                            )
+                        )
                     }
 
                 }
@@ -73,15 +83,17 @@ class MainActivity : AppCompatActivity() {
                     for(i in 0 until myRoomIDList.count()){
                         if(myRoomIDList[i] == partSnapshot.child("roomId").value as Long){
                             Log.d("MainActiviry", "F Yes")
-                            myChattingRoomList.add(ChattingRoom(
-                                partSnapshot.child("roomId").value as Long,
-                                partSnapshot.child("title").value.toString(),
-                                partSnapshot.child("description").value.toString(),
-                                partSnapshot.child("owner").value as Long,
-                                partSnapshot.child("locationX").value as Double,
-                                partSnapshot.child("locationY").value as Double,
-                                partSnapshot.child("locationCertified").value as Boolean,
-                                partSnapshot.child("timestamp").value as Long)
+                            myChattingRoomList.add(
+                                ChattingRoom(
+                                    partSnapshot.child("roomId").value as Long,
+                                    partSnapshot.child("title").value.toString(),
+                                    partSnapshot.child("description").value.toString(),
+                                    partSnapshot.child("owner").value as Long,
+                                    partSnapshot.child("locationX").value as Double,
+                                    partSnapshot.child("locationY").value as Double,
+                                    partSnapshot.child("locationCertified").value as Boolean,
+                                    partSnapshot.child("timestamp").value as Long
+                                )
                             )
                         }
                     }
@@ -91,5 +103,10 @@ class MainActivity : AppCompatActivity() {
 
         }
         roomRef.addValueEventListener(roomValueEventListener)
+    }
+
+    fun loadMyChattingRoomMessage(USERID: Long){
+        /* myChattingRoomList에서 roomId를 Key값으로, Message 객체를 value값으로 하여 DB로부터 데이터 가져옴. */
+
     }
 }

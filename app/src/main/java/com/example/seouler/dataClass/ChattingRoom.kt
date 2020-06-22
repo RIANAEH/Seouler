@@ -1,4 +1,4 @@
-package com.example.seouler
+package com.example.seouler.dataClass
 
 import android.location.Location
 import android.os.Parcel
