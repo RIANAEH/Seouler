@@ -1,6 +1,9 @@
 package com.example.seouler
 
 import android.location.Location
+import android.os.Parcel
+import android.os.Parcelable
+import java.io.Serializable
 import java.util.*
 
 data class ChattingRoom(var roomId : Long,
@@ -10,4 +13,6 @@ data class ChattingRoom(var roomId : Long,
                         var locationX : Double,
                         var locationY : Double,
                         var locationCertified : Boolean,
-                        var timestamp : Long) {}
+                        var timestamp : Long) : Serializable {
+
+}

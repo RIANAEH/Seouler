@@ -1,4 +1,6 @@
 package com.example.seouler
 
-data class Participation(var userId : Long, var roomId : Long) {
+import java.io.Serializable
+
+data class Participation(var userId : Long, var roomId : Long) : Serializable{
 }
