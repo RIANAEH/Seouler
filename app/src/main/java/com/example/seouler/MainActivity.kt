@@ -1,9 +1,15 @@
 package com.example.seouler
 
+import android.content.Context
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import com.example.seouler.Itinerary.*
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.dataClass.Message
 import com.example.seouler.dataClass.Participation
@@ -17,9 +23,32 @@ class MainActivity : AppCompatActivity() {
     var myChattingRoomList : ArrayList<ChattingRoom> = ArrayList()
     var myChattingRoomMessage : HashMap<Long, ArrayList<Message>> = HashMap()
 
+    var iti_intent = Intent() // Itinerary Activity send
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        var cc = Weather_Async(this) // API Weather
+        val lm: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager //GPS
+        val gpsLocationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location?) {
+                var provider = location?.provider;
+                var longitude = location?.longitude;
+                var latitude = location?.latitude;
+
+                /*txtResult.setText(
+                    "위치 : " + provider + "\n"
+                            + "위도 : " + longitude + "\n"
+                            + "경도 : " + latitude + "\n"
+                )*/
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String?) {}
+            override fun onProviderDisabled(provider: String?) {}
+
+        }
+
 
         /* 임시 UserId 사용 */
         val USERID : Long = 1592656608691
@@ -34,6 +63,15 @@ class MainActivity : AppCompatActivity() {
             chattingRoomIntent.putExtra("userId", USERID)
             chattingRoomIntent.putExtra("chattingroomList", myChattingRoomList)
             startActivity(chattingRoomIntent)
+        }
+
+        btn_itinerary.setOnClickListener {
+            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            //cc.execute()
+
+            startActivity(iti_intent)
+
+
         }
     }
     fun loadMyChattingRoom(USERID : Long){
