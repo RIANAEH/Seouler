@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.seouler">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,9 +21,17 @@
         </activity>
 
         <activity android:name=".ChattingHomeActivity">
+
         </activity>
+      
         <activity android:name=".ChattingMessageActivity">
         </activity>
+
+        <activity android:name=".PlanModifyActivity" />
+        <activity android:name=".Recycle_MainActivity" />
+        <activity android:name=".Exc_Recycle_MainActivity" />
+        <activity android:name=".Weather_MainActivity"/>
+
 
     </application>
 
