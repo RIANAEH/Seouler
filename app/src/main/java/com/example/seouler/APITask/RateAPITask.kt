@@ -2,16 +2,19 @@ package com.example.seouler
 
 import android.content.Context
 import android.util.Log
+import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.VolleyLog
+import com.android.volley.VolleyLog.TAG
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 object VolleyService_rate{
     val current = LocalTime.now()
@@ -23,6 +26,7 @@ object VolleyService_rate{
     var k = LocalTime.now().isBefore(temp)
 
     lateinit var response_json : JSONArray
+
     var testUrl = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=LHuF0WXP9Ie45wK4xO4j3iJZ9mMRsd4X&data=AP01"
     fun check11 (){
 
@@ -44,20 +48,23 @@ object VolleyService_rate{
     fun testVolley(context: Context, success: (Boolean) -> Unit) {
 
         val myJson = JSONObject()
-        val requestBody = myJson.toString()
         /* myJson에 아무 데이터도 put 하지 않았기 때문에 requestBody는 "{}" 이다 */
+        val requestBody = myJson.toString()
         check11()
+        println("<환율> url : $testUrl")
+
+        HttpsTrustManager.allowAllSSL()
 
         val testRequest = object : StringRequest(Method.GET, testUrl , Response.Listener { response ->
             println("<환율> 서버 Response 수신: $response")
-            println("<환율> url : $testUrl")
             /*내가만든..... 것....*/
             response_json = JSONArray(response)
-
-
             success(true)
+
         }, Response.ErrorListener { error ->
-            Log.d("ERROR", "서버 Response 가져오기 실패: $error")
+            Log.d("ERROR", "<환율> 서버 Response 가져오기 실패: $error")
+            var tmptmp = error.networkResponse
+            Log.d("ERROR", "$tmptmp")
             success(false)
         }) {
             override fun getBodyContentType(): String {
@@ -75,3 +82,4 @@ object VolleyService_rate{
     }
 
 }
+

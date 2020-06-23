@@ -45,7 +45,6 @@ class Exc_MainRvAdapter(val context: Context, val exclist : ArrayList<a_exchange
 
 
     inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        val nation = itemView?.findViewById<TextView>(R.id.tv_nation)
         val rate_unit = itemView?.findViewById<TextView>(R.id.tv_rateUnit)
         val excrate = itemView?.findViewById<TextView>(R.id.tv_exchangeRate)
 
@@ -76,9 +75,8 @@ class Exc_MainRvAdapter(val context: Context, val exclist : ArrayList<a_exchange
             이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
 
             /* 나머지 TextView와 String 데이터를 연결한다. */
-            nation?.text = aexchange.nation
             rate_unit?.text = aexchange.rateUnit
-            excrate?.text = aexchange.exchangeRate.toString()
+            excrate?.text = aexchange.exchangeRate
         }
     }
 }

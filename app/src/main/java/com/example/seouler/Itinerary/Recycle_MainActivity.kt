@@ -3,7 +3,6 @@ package com.example.seouler
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.icu.text.SimpleDateFormat
 import android.os.AsyncTask
 import android.os.Bundle
@@ -14,21 +13,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.toolbox.Volley
-import com.example.seouler.Exc_Recycle_MainActivity
-import com.example.seouler.VolleyService_rate
-import com.example.seouler.Weather_MainActivity
-import com.example.seouler.Itinerary.*
-import com.example.seouler.R
-import com.example.seouler.VolleyService_weather
+import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
 import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.*
+import javax.net.ssl.*
 
 
+var exclist = arrayListOf<a_exchange>()
 
 class Recycle_MainActivity : AppCompatActivity() {
     var weather_async = Weather_Async(this) // API
@@ -39,6 +37,7 @@ class Recycle_MainActivity : AppCompatActivity() {
     private var year = calendar.get(Calendar.YEAR)
     private var month = calendar.get(Calendar.MONTH)
     private var day = calendar.get(Calendar.DAY_OF_MONTH)
+
 
     var tformat = SimpleDateFormat("h:mm a")
 
@@ -116,11 +115,11 @@ class Recycle_MainActivity : AppCompatActivity() {
         recycler_view.adapter = mAdapter
 
         val lm = LinearLayoutManager(this)
-        recycler_view.layoutManager = lm
+        recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
         recycler_view.setHasFixedSize(true)
     }
 
-    fun OnClickHandler(view: View?) {calendar.get(Calendar.YEAR)
+    fun OnClickHandler() {calendar.get(Calendar.YEAR)
         Log.d("Recycle_MainActivity","onclicked~~~~~")
         val dialog = DatePickerDialog(this, dateSetListener, year, month, day)
         dialog.show()
@@ -131,9 +130,8 @@ class Recycle_MainActivity : AppCompatActivity() {
         //환율 설정//
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
             if(data != null){
-                tv_exc_nation.text = data.getStringExtra("exc_nation")
                 tv_exc_rateUnit.text = data.getStringExtra("exc_rateUnit")
-                tv_exchangeRate.text = data.getDoubleExtra("exc_exchange_rate", 0.0).toString()
+                tv_exchangeRate.text = data.getStringExtra("exc_exchange_rate")
                 onResume()
             }
         }
@@ -161,8 +159,8 @@ class Recycle_MainActivity : AppCompatActivity() {
         }
     }
 
-
 }
+
 
     class Rate_Async(mainActivity: Activity) : AsyncTask<Int?, Int, List<String>>() {
         private var con = mainActivity
@@ -170,18 +168,28 @@ class Recycle_MainActivity : AppCompatActivity() {
             VolleyService_rate.testVolley(con) { testSuccess ->
                 if (testSuccess){
                     Toast.makeText(con, "환율 통신 성공!", Toast.LENGTH_SHORT).show()
-                    var jsontmp = VolleyService_rate.response_json
-                    println("환율쓰....JSON: $jsontmp")
-                    if(jsontmp == JSONArray()){
-
+                    var response_json = VolleyService_rate.response_json
+                    println("환율쓰....JSON: $response_json")
+                    for (i in 0 until response_json.length()){
+                        var response_json_obj : JSONObject = response_json.get(i) as JSONObject
+                        exclist.add(jsonToExc(response_json_obj.get("cur_unit") as String, response_json_obj.get("kftc_deal_bas_r") as String))
                     }
+
+                    con.tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
+                    con.tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
 
                 } else{
                     Toast.makeText(con, "환율 실패...", Toast.LENGTH_SHORT).show()
+
                 }
 
             }
             return null
+        }
+
+        fun jsonToExc(cur_unit: String, kftc: String) : a_exchange{
+            val exc = a_exchange(cur_unit, kftc)
+            return exc
         }
 
     }
@@ -205,11 +213,9 @@ class Recycle_MainActivity : AppCompatActivity() {
                     var tmp2 = tmp.get("weather") as JSONArray
                     var tmp3 = tmp2.getJSONObject(0)
                     var icon_num = tmp3.get("icon") as String
-                    println("AAAAAAA $icon_num")
 
 
                     con.icon_weather.setImageResource(getWeatherIcon_file(icon_num))
-
                     con.icon_weather.setImageResource(R.drawable.w01d)
                 } else {
                     Toast.makeText(con, "통신 실패...!", Toast.LENGTH_LONG).show()
@@ -245,5 +251,59 @@ class Recycle_MainActivity : AppCompatActivity() {
     }
 
 
+class HttpsTrustManager : X509TrustManager {
+    override fun checkClientTrusted(
+        x509Certificates: Array<X509Certificate?>?, s: String?
+    ) {
+    }
 
+    override fun checkServerTrusted(
+        x509Certificates: Array<X509Certificate?>?, s: String?
+    ) {
+    }
 
+    fun isClientTrusted(chain: Array<X509Certificate?>?): Boolean {
+        return true
+    }
+
+    fun isServerTrusted(chain: Array<X509Certificate?>?): Boolean {
+        return true
+    }
+
+    override fun getAcceptedIssuers(): Array<X509Certificate> {
+        return _AcceptedIssuers
+    }
+
+    companion object {
+        private var trustManagers: Array<TrustManager>? = null
+        private val _AcceptedIssuers =
+            arrayOf<X509Certificate>()
+
+        fun allowAllSSL() {
+            HttpsURLConnection.setDefaultHostnameVerifier(object : HostnameVerifier {
+                override fun verify(arg0: String?, arg1: SSLSession?): Boolean {
+                    return true
+                }
+            })
+            var context: SSLContext? = null
+            if (trustManagers == null) {
+                trustManagers =
+                    arrayOf(HttpsTrustManager())
+            }
+            try {
+                context = SSLContext.getInstance("TLS")
+                context.init(null, trustManagers, SecureRandom())
+            } catch (e: NoSuchAlgorithmException) {
+                e.printStackTrace()
+            } catch (e: KeyManagementException) {
+                e.printStackTrace()
+            }
+            if (context != null) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(
+                    context
+                        .getSocketFactory()
+                )
+            }
+        }
+    }
+}
