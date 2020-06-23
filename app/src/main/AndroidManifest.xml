@@ -23,6 +23,10 @@
         <activity android:name=".ChattingHomeActivity">
 
         </activity>
+      
+        <activity android:name=".ChattingMessageActivity">
+        </activity>
+
         <activity android:name=".PlanModifyActivity" />
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />

@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/chattingRoomListItem"
+    android:id="@+id/chattingroomReciclerViewItem"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:background="@drawable/border_chattingroom_cell"
+    android:background="@drawable/border_chattinghome_cell"
     android:orientation="horizontal">
 
 
