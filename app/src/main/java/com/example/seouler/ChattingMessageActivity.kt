@@ -94,7 +94,6 @@ class ChattingMessageActivity : AppCompatActivity(){
             }
         }
         msgRef.addValueEventListener(msgEventListener)
-        Thread.sleep(2000)
         return msgData
     }
 
