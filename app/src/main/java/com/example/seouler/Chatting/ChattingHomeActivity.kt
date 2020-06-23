@@ -7,6 +7,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.R
 import com.example.seouler.dataClass.ChattingRoom
+import com.example.seouler.dataClass.Location as LocationData
 import kotlinx.android.synthetic.main.activity_chattinghome.*
 
 class ChattingHomeActivity : AppCompatActivity() {
@@ -37,11 +38,13 @@ class ChattingHomeActivity : AppCompatActivity() {
                 when(item){
                     R.id.menuitem_createroom -> {
                         val nextIntent = Intent(this, CreateRoomAcvitivy::class.java)
+                        nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
                         startActivity(nextIntent)
                     }
                     R.id.menuitem_searchroom -> {
                         val nextIntent = Intent(this, SearchRoomActivity::class.java)
                         nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
+                        nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
                         startActivity(nextIntent)
 
                     }
