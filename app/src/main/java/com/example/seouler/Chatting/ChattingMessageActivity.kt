@@ -1,16 +1,15 @@
-package com.example.seouler
+package com.example.seouler.Chatting
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.seouler.R
 import com.example.seouler.dataClass.Message
-import com.example.seouler.dataClass.Participation
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_chattinghome.*
 import kotlinx.android.synthetic.main.activity_chattingmessage.*
 
 class ChattingMessageActivity : AppCompatActivity(){
@@ -33,7 +32,10 @@ class ChattingMessageActivity : AppCompatActivity(){
         val roomId : Long = intent.extras!!["roomId"] as Long
         messageList = loadMessage(roomId)
 
-        adapter = ChattingMessageAdapter(this, messageList)
+        adapter = ChattingMessageAdapter(
+            this,
+            messageList
+        )
         adapter!!.USERID = intent.extras!!["userId"] as Long
         chattingMessageRecyclerView.adapter = adapter
         chattingMessageRecyclerView.layoutManager = LinearLayoutManager(this)

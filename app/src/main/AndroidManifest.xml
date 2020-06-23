@@ -20,13 +20,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ChattingHomeActivity">
-
-        </activity>
-      
-        <activity android:name=".ChattingMessageActivity">
-        </activity>
-
+        <activity android:name=".Chatting.ChattingHomeActivity"/>
+        <activity android:name=".Chatting.ChattingMessageActivity"/>
+        <activity android:name=".Chatting.CreateRoomAcvitivy"/>
+        <activity android:name=".Chatting.SearchRoomActivity"/>
         <activity android:name=".PlanModifyActivity" />
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />

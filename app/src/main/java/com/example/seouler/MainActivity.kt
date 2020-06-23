@@ -8,8 +8,7 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import com.example.seouler.Itinerary.*
+import com.example.seouler.Chatting.ChattingHomeActivity
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.dataClass.Message
 import com.example.seouler.dataClass.Participation

@@ -1,10 +1,11 @@
-package com.example.seouler
+package com.example.seouler.Chatting
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.seouler.R
 import com.example.seouler.dataClass.Message
 import kotlinx.android.synthetic.main.rvitem_chattingmessage.view.*
 import kotlinx.android.synthetic.main.rvitem_chattingmessage_me.view.*
