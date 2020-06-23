@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:id="@+id/rec_linear_layout_1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/rec_linear_layout2"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="20dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+        <!-- app:layout_constraintBottom_toTopOf="@+id/rec_linear_layout2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">-->
 
         <LinearLayout
             android:id="@+id/simple_weather"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="15dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -26,7 +31,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="날씨"
+                android:text="Weather"
                 android:textAlignment="center" />
 
             <LinearLayout
@@ -37,7 +42,7 @@
                 <ImageView
                     android:id="@+id/icon_weather"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:layout_weight="1"
@@ -48,11 +53,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
+                    android:gravity="bottom"
                     android:text="--"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                    android:textSize="24sp" />
+                    android:textColor="#000000"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:ignore="RtlCompat" />
             </LinearLayout>
 
         </LinearLayout>
@@ -69,34 +77,20 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="환율"
+                android:text="Exchange Rate"
                 android:textAlignment="center" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_exc_rateUnit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_exc_nation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="미국"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/tv_exc_rateUnit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="USD"
-                    android:textAlignment="center"
-                    android:textSize="24sp" />
-            </LinearLayout>
+                android:gravity="center"
+                android:text="--"
+                android:textAlignment="center"
+                android:textColor="#3E3E3E"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/tv_exchangeRate"
@@ -104,27 +98,31 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="15dp"
                 android:layout_weight="1"
-                android:text="1500.0"
+                android:gravity="bottom"
+                android:text="--"
                 android:textAlignment="center"
-                android:textColor="#FF0000"
-                android:textSize="36sp" />
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:ignore="RtlCompat" />
 
         </LinearLayout>
     </LinearLayout>
 
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:id="@+id/rec_linear_layout2"
-        app:layout_constraintTop_toBottomOf="@+id/rec_linear_layout_1">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <!--  app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rec_linear_layout_1">-->
 
         <LinearLayout
             android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#6D1B1B1B"
+            android:background="#6DFBFBFB"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/recycler_view"
             app:layout_constraintTop_toTopOf="parent">
@@ -134,7 +132,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="left"
+                android:background="#FFFFFF"
+                android:text="◀"
                 android:textSize="30dp" />
 
             <TextView
@@ -145,7 +144,7 @@
                 android:onClick="OnClickHandler"
                 android:text="asdf/as/as"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:textSize="30dp" />
 
 
@@ -154,7 +153,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="right"
+                android:background="#FFFFFF"
+                android:text="▶"
                 android:textSize="30dp" />
 
 
@@ -170,4 +170,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
