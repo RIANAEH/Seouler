@@ -25,7 +25,10 @@ object VolleyService_rate{
     lateinit var response_json : JSONArray
     var testUrl = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=LHuF0WXP9Ie45wK4xO4j3iJZ9mMRsd4X&data=AP01"
     fun check11 (){
-        if (k || !testUrl.contains("&searchdata")) {
+
+        println("<환율> Check11 k :: $k")
+        println("<환율> $current ")
+        if (k && !testUrl.contains("&searchdate")) {
             var calendar = Calendar.getInstance()
             calendar.add(Calendar.DAY_OF_YEAR, -1) //변경하고 싶은 원하는 날짜 수를 넣어 준다.
             var TimeToDate = calendar.time
@@ -49,9 +52,6 @@ object VolleyService_rate{
             println("<환율> 서버 Response 수신: $response")
             println("<환율> url : $testUrl")
             /*내가만든..... 것....*/
-
-
-
             response_json = JSONArray(response)
 
 
