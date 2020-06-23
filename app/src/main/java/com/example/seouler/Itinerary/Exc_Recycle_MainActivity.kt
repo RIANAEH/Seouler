@@ -25,19 +25,14 @@ class Exc_Recycle_MainActivity : AppCompatActivity() {
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
 
-    private var exclist = arrayListOf<a_exchange>(
-        a_exchange("미국", "USD", 1500.0),
-        a_exchange("호주", "AUD", 1400.0),
-        a_exchange("중국", "CHY", 1300.0),
-        a_exchange("일본", "JPY", 1200.0),
-        a_exchange("캐나다", "CAD", 1100.0)
-    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exc_recycle_main)
 
         val intent = Intent()
+
 
 
         val mAdapter = Exc_MainRvAdapter(this, exclist)
@@ -52,10 +47,9 @@ class Exc_Recycle_MainActivity : AppCompatActivity() {
                     builder.setTitle("Choose Rate").setMessage("Set "+exclist[position].rateUnit+"?")
 
                     builder.setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
-                        intent.putExtra("exc_nation",exclist[position].nation)
                         intent.putExtra("exc_rateUnit",exclist[position].rateUnit)
                         intent.putExtra("exc_exchange_rate",exclist[position].exchangeRate)
-
+                        set_rate_index = position
                         this@Exc_Recycle_MainActivity.setResult(Activity.RESULT_OK,intent)
                         this@Exc_Recycle_MainActivity.finish()
                     }
