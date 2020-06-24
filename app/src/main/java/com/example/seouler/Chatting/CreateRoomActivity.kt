@@ -36,7 +36,7 @@ class CreateRoomAcvitivy : AppCompatActivity() {
 
         /* 서울에 존재하는 지명들을 모두 긁어와 locationStringArray에 넣어줌 */
         createroomLocationSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, locationStringArray)
-        Log.d("Location",createroomLocationSpinner.selectedItem.toStringg())
+        Log.d("Location",createroomLocationSpinner.selectedItem.toString())
 
         //spinner 리스너
         createroomLocationSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

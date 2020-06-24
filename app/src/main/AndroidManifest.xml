@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.seouler">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -33,7 +31,7 @@
         <activity android:name=".Exc_Recycle_MainActivity" />
         <activity android:name=".Weather_MainActivity"/>
         <service
-            android:name=".FetchAddressIntentService"
+            android:name=".Chatting.FetchAddressIntentService"
             android:exported="false"/>
 
 

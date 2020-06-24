@@ -22,21 +22,26 @@ import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import java.time.LocalDate
 import java.util.*
 import javax.net.ssl.*
 
 
 var exclist = arrayListOf<a_exchange>()
 
+
 class Recycle_MainActivity : AppCompatActivity() {
     var weather_async = Weather_Async(this) // API
     var rate_async = Rate_Async(this)
 
+    val lm = LinearLayoutManager(this)
 
-    private var calendar = Calendar.getInstance()
-    private var year = calendar.get(Calendar.YEAR)
-    private var month = calendar.get(Calendar.MONTH)
-    private var day = calendar.get(Calendar.DAY_OF_MONTH)
+    var lcDate: LocalDate = LocalDate.now()
+    var lcDate_set: LocalDate = lcDate
+    //private var calendar = Calendar.getInstance()
+    private var year = lcDate.year// calendar.get(Calendar.YEAR)
+    private var month = lcDate.monthValue//calendar.get(Calendar.MONTH)
+    private var day = lcDate.dayOfMonth //calendar.get(Calendar.DAY_OF_MONTH)
 
 
     var tformat = SimpleDateFormat("h:mm a")
@@ -44,8 +49,9 @@ class Recycle_MainActivity : AppCompatActivity() {
     private val dateSetListener = DatePickerDialog.OnDateSetListener(){ datePicker: DatePicker, year:Int, monthOfYear: Int, dayOfMonth: Int ->
         tv_date.setText(year.toString() + "/ " + (monthOfYear+1).toString() + "/ " + dayOfMonth.toString());
         this.year = year
-        this.month = monthOfYear
+        this.month = monthOfYear + 1
         this.day = dayOfMonth
+        lcDate_set = LocalDate.of(this.year, this.month, this.day)
     }
 
 
@@ -70,8 +76,15 @@ class Recycle_MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycle_main)
+        tv_date.text = year.toString() + "/ " + month.toString() + "/ " + day.toString()
 
-        tv_date.text = year.toString() + "/ " + (month+1).toString() + "/ " + day.toString()
+        tv_date.setOnClickListener{
+            //calendar.get(Calendar.YEAR) //tv_date click
+            Log.d("Recycle_MainActivity","onclicked~~~~~")
+            val dialog = DatePickerDialog(this, dateSetListener, year, month-1, day)
+            dialog.show()
+
+        }
 
         weather_async.execute()
         rate_async.execute()
@@ -112,17 +125,30 @@ class Recycle_MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        btn_left.setOnClickListener{
+            lcDate_set = lcDate_set.minusDays(1)
+            update_setDate(lcDate_set)
+        }
+
+        btn_right.setOnClickListener{
+            lcDate_set = lcDate_set.plusDays(1)
+            update_setDate(lcDate_set)
+        }
+
+
         recycler_view.adapter = mAdapter
 
-        val lm = LinearLayoutManager(this)
         recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
         recycler_view.setHasFixedSize(true)
     }
 
-    fun OnClickHandler() {calendar.get(Calendar.YEAR)
-        Log.d("Recycle_MainActivity","onclicked~~~~~")
-        val dialog = DatePickerDialog(this, dateSetListener, year, month, day)
-        dialog.show()
+    private fun update_setDate(WlcDate_set : LocalDate){
+
+        this.year = WlcDate_set.year
+        this.month = WlcDate_set.monthValue
+        this.day = WlcDate_set.dayOfMonth
+        tv_date.text = this.year.toString()  + "/ " +  this.month.toString()  + "/ " +  this.day.toString()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -250,7 +276,7 @@ class Recycle_MainActivity : AppCompatActivity() {
 
     }
 
-
+//HTTP SSL//
 class HttpsTrustManager : X509TrustManager {
     override fun checkClientTrusted(
         x509Certificates: Array<X509Certificate?>?, s: String?

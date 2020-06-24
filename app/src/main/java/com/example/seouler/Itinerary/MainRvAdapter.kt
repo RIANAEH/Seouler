@@ -40,7 +40,6 @@ class MainRvAdapter(val context: Context, val planlist : ArrayList<a_plan>) :
 
 
     inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        val map = itemView?.findViewById<ImageView>(R.id.map_photo)
         val time = itemView?.findViewById<TextView>(R.id.tv_time)
         val dest = itemView?.findViewById<TextView>(R.id.tv_destination)
 
@@ -64,14 +63,6 @@ class MainRvAdapter(val context: Context, val planlist : ArrayList<a_plan>) :
         }
 
         fun bind (aplan: a_plan, context: Context) {
-            /* dogPhoto의 setImageResource에 들어갈 이미지의 id를 파일명(String)으로 찾고,
-            이미지가 없는 경우 안드로이드 기본 아이콘을 표시한다.*/
-            if (aplan.map != "") {
-                val resourceId = context.resources.getIdentifier(aplan.map, "drawable", context.packageName)
-                map?.setImageResource(resourceId)
-            } else {
-                map?.setImageResource(R.mipmap.ic_launcher)
-            }
             /* 나머지 TextView와 String 데이터를 연결한다. */
             time?.text = aplan.time
             dest?.text = aplan.destination
