@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
-        btn_itinerary.setOnClickListener {
+        mainItineraryButton.setOnClickListener {
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
             //cc.execute()
 
