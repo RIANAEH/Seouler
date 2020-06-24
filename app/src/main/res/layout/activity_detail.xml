@@ -27,9 +27,10 @@
         app:layout_constraintTop_toBottomOf="@+id/placeDetailName">
 
         <LinearLayout
+            android:id="@+id/detailItemCarrier"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
         </LinearLayout>
     </ScrollView>
