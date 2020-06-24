@@ -115,14 +115,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
-//        btn_itinerary.setOnClickListener {
-//            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
-//            //cc.execute()
-//
-//            startActivity(iti_intent)
-//
-//
-//        }
+
+        mainItineraryButton.setOnClickListener {
+            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            //cc.execute()
+
+            startActivity(iti_intent)
+
+
+        }
     }
 
     fun checkPermission(){
