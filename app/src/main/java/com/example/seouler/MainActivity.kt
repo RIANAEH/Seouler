@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 import android.location.Location
 import android.os.Looper
+import com.example.seouler.Recommend.Recommend_MainActivity
 import com.google.android.gms.location.*
 import com.example.seouler.dataClass.Location as LocationData
 
@@ -91,8 +92,15 @@ class MainActivity : AppCompatActivity() {
 
             startActivity(iti_intent)
 
-
         }
+
+        // 추천 페이지 버튼
+        btn_recommend.setOnClickListener {
+            val recommend_intent = Intent(this, Recommend_MainActivity::class.java)
+            startActivity(recommend_intent)
+        }
+
+
     }
     fun loadMyChattingRoom(USERID : Long){
         var partData : ArrayList<Participation> = ArrayList()

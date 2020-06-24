@@ -2,10 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.seouler">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <meta-data android:name="com.kakao.sdk.AppKey" android:value="f0b450fb3174218f63c39c6b9633464d"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="f0b450fb3174218f63c39c6b9633464d" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Recommend.Recommend_MainActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,20 +25,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Chatting.ChattingHomeActivity"/>
-        <activity android:name=".Chatting.ChattingMessageActivity"/>
-        <activity android:name=".Chatting.CreateRoomAcvitivy"/>
-        <activity android:name=".Chatting.SearchRoomActivity"/>
+        <activity android:name=".Chatting.ChattingHomeActivity" />
+        <activity android:name=".Chatting.ChattingMessageActivity" />
+        <activity android:name=".Chatting.CreateRoomAcvitivy" />
+        <activity android:name=".Chatting.SearchRoomActivity" />
         <activity android:name=".PlanModifyActivity" />
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
-        <activity android:name=".Weather_MainActivity"/>
+        <activity android:name=".Weather_MainActivity" />
+
         <service
             android:name=".Chatting.FetchAddressIntentService"
-            android:exported="false"/>
-
-
+            android:exported="false" />
     </application>
 
 </manifest>
