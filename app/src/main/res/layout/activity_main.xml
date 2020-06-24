@@ -15,12 +15,12 @@
         android:layout_marginBottom="20dp"
         android:text="Recommend"
         app:layout_constraintBottom_toTopOf="@+id/mainSearchButton"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
+        app:layout_constraintEnd_toStartOf="@+id/mainItineraryButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/mainItineraryButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
@@ -58,7 +58,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/mainSearchButton"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        app:layout_constraintTop_toBottomOf="@+id/mainItineraryButton" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
