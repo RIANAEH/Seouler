@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.fragments.DetailItemFragment
-import kotlinx.android.synthetic.main.activity_chatting_home.*
+import kotlinx.android.synthetic.main.activity_chattinghome.*
 import kotlinx.android.synthetic.main.activity_detail.*
 import java.util.zip.Inflater
 
