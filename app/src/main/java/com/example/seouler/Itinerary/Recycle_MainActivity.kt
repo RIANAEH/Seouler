@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -23,6 +25,8 @@ import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import javax.net.ssl.*
 
@@ -31,9 +35,7 @@ var exclist = arrayListOf<a_exchange>()
 
 
 class Recycle_MainActivity : AppCompatActivity() {
-    var weather_async = Weather_Async(this) // API
-    var rate_async = Rate_Async(this)
-
+    var set_rate_index = 0
     val lm = LinearLayoutManager(this)
 
     var lcDate: LocalDate = LocalDate.now()
@@ -42,6 +44,8 @@ class Recycle_MainActivity : AppCompatActivity() {
     private var year = lcDate.year// calendar.get(Calendar.YEAR)
     private var month = lcDate.monthValue//calendar.get(Calendar.MONTH)
     private var day = lcDate.dayOfMonth //calendar.get(Calendar.DAY_OF_MONTH)
+
+    lateinit var firestore : FirebaseFirestore
 
 
     var tformat = SimpleDateFormat("h:mm a")
@@ -76,6 +80,14 @@ class Recycle_MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycle_main)
+        set_rate_index = intent.getIntExtra("SetRateIndex",0 )
+
+        //firestore for Iti
+        firestore = FirebaseFirestore.getInstance()
+
+        var weather_async = Weather_Async(this) // API
+        var rate_async = Rate_Async(this, set_rate_index)
+
         tv_date.text = year.toString() + "/ " + month.toString() + "/ " + day.toString()
 
         tv_date.setOnClickListener{
@@ -89,8 +101,6 @@ class Recycle_MainActivity : AppCompatActivity() {
         weather_async.execute()
         rate_async.execute()
 
-
-
         //날씨
         simple_weather.setOnClickListener {
             val go_to_weather_intent = Intent(applicationContext, Weather_MainActivity::class.java)
@@ -102,6 +112,15 @@ class Recycle_MainActivity : AppCompatActivity() {
         simple_exc.setOnClickListener {
             val go_to_exc_intent = Intent(applicationContext, Exc_Recycle_MainActivity::class.java)
             startActivityForResult(go_to_exc_intent,1) //////
+        }
+
+        if(rate_async.getStatus() == AsyncTask.Status.FINISHED){
+            tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
+            tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
+        }
+        else{
+            tv_exc_rateUnit.text = "Timeout"
+            tv_exchangeRate.text = "Timeout"
         }
 
 
@@ -138,7 +157,6 @@ class Recycle_MainActivity : AppCompatActivity() {
 
 
         recycler_view.adapter = mAdapter
-
         recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
         recycler_view.setHasFixedSize(true)
     }
@@ -158,6 +176,7 @@ class Recycle_MainActivity : AppCompatActivity() {
             if(data != null){
                 tv_exc_rateUnit.text = data.getStringExtra("exc_rateUnit")
                 tv_exchangeRate.text = data.getStringExtra("exc_exchange_rate")
+                set_rate_index = data.getIntExtra("SetRateIndex",0)
                 onResume()
             }
         }
@@ -166,6 +185,26 @@ class Recycle_MainActivity : AppCompatActivity() {
         else if(requestCode == 2 && resultCode == Activity.RESULT_OK){
             if(data != null){
                 //planlist[data.getIntExtra("position",-1)].time
+                val docRef = firestore.collection("Users").document("User").collection("2020-6-25")
+
+                val samplePlan = hashMapOf(
+                    "time" to LocalTime.of(11,30),
+                    "destName" to "SEOUL",
+                    "geoLatlon" to GeoPoint(34.0, 66.0)
+                )
+                // DB UPDATE
+                docRef.add(samplePlan)
+                    .addOnSuccessListener { documentReference ->
+                        println( "DocumentSnapshot added with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        println( "Error adding document $e" )
+                    }
+
+                Toast.makeText(this,"뭐지..",Toast.LENGTH_SHORT).show()
+
+
+                // DONE UPDATE
                 var tmp_h= data.getIntExtra("time_h", 0)
                 var tmp_m = data.getIntExtra("time_m",0)
 
@@ -185,38 +224,56 @@ class Recycle_MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+
+        intent.putExtra("SetRateIndex", set_rate_index)
+        this.setResult(Activity.RESULT_OK,intent)
+        super.onBackPressed()
+        //this.finish()
+    }
 }
 
 
-    class Rate_Async(mainActivity: Activity) : AsyncTask<Int?, Int, List<String>>() {
-        private var con = mainActivity
+    class Rate_Async(mainActivity: Activity, setrateindex : Int) : AsyncTask<Int?, Int, List<String>>() {
+        private var act = mainActivity
+        private var set_rate_index = setrateindex
         override fun doInBackground(vararg params: Int?): List<String>? {
-            VolleyService_rate.testVolley(con) { testSuccess ->
-                if (testSuccess){
-                    Toast.makeText(con, "환율 통신 성공!", Toast.LENGTH_SHORT).show()
-                    var response_json = VolleyService_rate.response_json
-                    println("환율쓰....JSON: $response_json")
-                    for (i in 0 until response_json.length()){
-                        var response_json_obj : JSONObject = response_json.get(i) as JSONObject
-                        exclist.add(jsonToExc(response_json_obj.get("cur_unit") as String, response_json_obj.get("kftc_deal_bas_r") as String))
-                    }
 
-                    con.tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
-                    con.tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
+            VolleyService_rate.testVolley(act) { testSuccess ->
+                if (testSuccess){
+                    Toast.makeText(act, "환율 통신 성공!", Toast.LENGTH_SHORT).show()
+
+                    var response_json = VolleyService_rate.response_json
+
+                    println("환율쓰2....JSON: $response_json")
+                    //for (i in 0 until response_json.length()){
+                    //    var response_json_obj : JSONObject = response_json.get(i) as JSONObject
+                    //    exclist.add(jsonToExc(response_json_obj.get("cur_unit") as String, response_json_obj.get("kftc_deal_bas_r") as String))
+                    //}
+
+                    act.tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
+                    act.tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
 
                 } else{
-                    Toast.makeText(con, "환율 실패...", Toast.LENGTH_SHORT).show()
-
+                    Toast.makeText(act, "환율 실패...", Toast.LENGTH_SHORT).show()
                 }
 
             }
+
             return null
         }
 
-        fun jsonToExc(cur_unit: String, kftc: String) : a_exchange{
-            val exc = a_exchange(cur_unit, kftc)
-            return exc
+        override fun onPostExecute(result: List<String>?) {
+            super.onPostExecute(result)
+            println("환율 난 해방이다 <야호>")
+
+
         }
+
+    //    fun jsonToExc(cur_unit: String, kftc: String) : a_exchange{
+     //       val exc = a_exchange(cur_unit, kftc)
+     //       return exc
+     //   }
 
     }
 

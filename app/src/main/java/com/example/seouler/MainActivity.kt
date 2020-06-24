@@ -1,30 +1,32 @@
 package com.example.seouler
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.seouler.Chatting.ChattingHomeActivity
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.dataClass.Message
 import com.example.seouler.dataClass.Participation
+import com.google.android.gms.location.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import android.location.Location
-import android.os.Looper
-import com.google.android.gms.location.*
 import com.example.seouler.dataClass.Location as LocationData
 
-var set_rate_index : Int = 0
 
 class MainActivity : AppCompatActivity() {
     var myChattingRoomList : ArrayList<ChattingRoom> = ArrayList()
@@ -34,12 +36,12 @@ class MainActivity : AppCompatActivity() {
     var myLocation : LocationData = LocationData(1.1, 1.1)
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
-    var iti_intent = Intent() // Itinerary Activity send
+    var set_rate_index : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
+
         //위치정보 권한 요청
         checkPermission()
         //위치정보 1초마다 업데이트해서 변수 myLocation에 넣음.
@@ -87,9 +89,10 @@ class MainActivity : AppCompatActivity() {
 
         btn_itinerary.setOnClickListener {
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            iti_intent.putExtra("SetRateIndex", set_rate_index)
             //cc.execute()
 
-            startActivity(iti_intent)
+            startActivityForResult(iti_intent,2)
 
 
         }
@@ -216,5 +219,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+    }
+
+    ///
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        var s = data?.getIntExtra("SetRateIndex", 9)
+        Toast.makeText(this, "$requestCode $resultCode $s", Toast.LENGTH_SHORT).show()
+        if(requestCode == 2 && resultCode == Activity.RESULT_OK){ //
+            if(data != null){
+                set_rate_index = data.getIntExtra("SetRateIndex",0)
+                onResume()
+            }
+        }
+        else{
+
+        }
+
     }
 }
