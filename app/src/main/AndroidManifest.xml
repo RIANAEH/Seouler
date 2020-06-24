@@ -33,6 +33,7 @@
         <activity android:name=".PlaceLikingActivity"/>
         <activity android:name=".PlaceDetailIconActivity"/>
         <activity android:name=".PlaceDetailActivity"/>
+        <activity android:name=".Chatting.ChattingInfoActivity"/>
         <service
             android:name=".Chatting.FetchAddressIntentService"
             android:exported="false"/>
