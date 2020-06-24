@@ -42,7 +42,7 @@
                 <ImageView
                     android:id="@+id/icon_weather"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:layout_weight="1"
@@ -52,7 +52,7 @@
                     android:id="@+id/temperature_now"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:gravity="bottom"
                     android:text="--"
                     android:textAlignment="center"
@@ -90,7 +90,8 @@
                 android:text="--"
                 android:textAlignment="center"
                 android:textColor="#3E3E3E"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_exchangeRate"
@@ -141,7 +142,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
-                android:onClick="OnClickHandler"
                 android:text="asdf/as/as"
                 android:textAlignment="center"
                 android:textColor="#000000"
