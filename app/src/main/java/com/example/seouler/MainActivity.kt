@@ -8,20 +8,17 @@ import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.seouler.Chatting.ChattingHomeActivity
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.dataClass.Message
 import com.example.seouler.dataClass.Participation
-import com.example.seouler.dataClass.a_exchange
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.jar.Manifest
 import android.location.Location
 import android.os.Looper
 import com.google.android.gms.location.*
@@ -34,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     var myChattingRoomMessageList : ArrayList<ArrayList<Message>> = ArrayList()
     val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     var locationPermittedAll = false
-    var myLocation : LocationData = LocationData(0.0, 0.0)
+    var myLocation : LocationData = LocationData(1.1, 1.1)
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
     var iti_intent = Intent() // Itinerary Activity send
@@ -77,8 +74,8 @@ class MainActivity : AppCompatActivity() {
         val USERID : Long = 1592656608691
 
         /* MainActivity에서 먼저 DB로부터 필요한 데이터 읽어오는 과정 필요 */
-        loadMyChattingRoom(USERID)
-        Thread.sleep(2000)
+        //loadMyChattingRoom(USERID)
+        //Thread.sleep(2000)
 
         mainChattingButton.setOnClickListener {
             val chattingRoomIntent = Intent(this, ChattingHomeActivity::class.java)

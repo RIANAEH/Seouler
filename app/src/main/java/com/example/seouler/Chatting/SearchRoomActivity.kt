@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.R
 import com.example.seouler.dataClass.ChattingRoom
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_search_room.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SearchRoomActivity : AppCompatActivity() {
@@ -30,11 +28,11 @@ class SearchRoomActivity : AppCompatActivity() {
         var data:ArrayList<ChattingRoom> = ArrayList()
         for (i in 1..10) {
             val searched = ChattingRoom(1,
-                title="${i}st Room",
+                title ="${i}st Room",
                 description = "${i}st Room",
-                owner=2,
-                locationX=1.0,
-                locationY=2.0,
+                owner =2,
+                locationX =1.0,
+                locationY =2.0,
                 locationCertified = false,
                 timestamp = 20100210,
                 uid = 123451234)

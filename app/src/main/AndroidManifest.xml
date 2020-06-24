@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <meta-data android:name="com.kakao.sdk.AppKey" android:value="f0b450fb3174218f63c39c6b9633464d"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +32,9 @@
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
         <activity android:name=".Weather_MainActivity"/>
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false"/>
 
 
     </application>

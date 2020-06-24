@@ -42,7 +42,9 @@ class ChattingMessageActivity : AppCompatActivity(){
         chattingMessageRecyclerView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             if (bottom < oldBottom) {
                 chattingMessageRecyclerView.postDelayed(Runnable() {
-                    chattingMessageRecyclerView.smoothScrollToPosition(messageList.size-1)
+                    if(messageList.size!=0){
+                        chattingMessageRecyclerView.smoothScrollToPosition(messageList.size-1)
+                    }
                 }, 100)
             }
         }
@@ -54,12 +56,32 @@ class ChattingMessageActivity : AppCompatActivity(){
             var messageRef = FirebaseDatabase.getInstance().getReference("message")
             var uid = System.currentTimeMillis()
             messageRef.child("${uid}").setValue(Message(uid, roomId, intent.extras!!["userId"] as Long, "${inputMessageTextView.text}", uid, uid))
+
+            var roomRef = FirebaseDatabase.getInstance().getReference("chattingRoom")
+            var updateRoomTimestampListner = object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (roomSnapshot in dataSnapshot.children) {
+                        if (roomId == roomSnapshot.child("roomId").value as Long) {
+                            roomSnapshot.ref.child("timestamp").setValue(uid)
+
+                            //roomRef.child(key).child("timestamp").setValue(uid)
+                        }
+
+                    }
+                }
+
+            }
+            roomRef.addListenerForSingleValueEvent(updateRoomTimestampListner)
         }
     }
 
     fun loadMessage(roomId : Long) : ArrayList<Message>{
         var msgData = ArrayList<Message>()
-        var msgRef = FirebaseDatabase.getInstance().getReference("message")
+        var msgRef = FirebaseDatabase.getInstance().getReference("message").orderByChild("timestamp")
         val msgEventListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("Not yet implemented")
@@ -93,6 +115,8 @@ class ChattingMessageActivity : AppCompatActivity(){
                 chattingMessageRecyclerView.adapter = adapter
                 chattingMessageRecyclerView.scrollToPosition(messageList.size-1)
                 inputMessageTextView.text.clear()
+
+
             }
         }
         msgRef.addValueEventListener(msgEventListener)
