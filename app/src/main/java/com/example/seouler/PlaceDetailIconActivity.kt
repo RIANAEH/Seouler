@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.dataClass.ChattingRoom
-import kotlinx.android.synthetic.main.activity_chatting_home.*
 
 class PlaceDetailIconActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

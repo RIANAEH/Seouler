@@ -90,13 +90,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
+        mainSearchButton.setOnClickListener {
+            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
+            startActivity(testDetailIntent)
+        }
+
         mainItineraryButton.setOnClickListener {
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
             //cc.execute()
 
             startActivity(iti_intent)
-
-
         }
     }
 
