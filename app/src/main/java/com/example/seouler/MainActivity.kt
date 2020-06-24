@@ -35,6 +35,11 @@ class MainActivity : AppCompatActivity() {
             chattingRoomIntent.putExtra("chattingroomList", myChattingRoomList)
             startActivity(chattingRoomIntent)
         }
+
+        mainSearchButton.setOnClickListener {
+            val detailUITestIntent = Intent(this, PlaceDetailActivity::class.java)
+            startActivity(detailUITestIntent)
+        }
     }
     fun loadMyChattingRoom(USERID : Long){
         var partData : ArrayList<Participation> = ArrayList()
