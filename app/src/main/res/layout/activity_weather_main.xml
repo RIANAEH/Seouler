@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#8CD1FF"
+    android:orientation="vertical"
+    tools:context=".Weather_MainActivity">
+
+
+    <fragment
+        android:id="@+id/frg_weather_today"
+        android:name="com.example.seouler.Weather_Today_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="1" />
+
+    <fragment
+        android:id="@+id/ftg_weather_weekly"
+        android:name="com.example.seouler.Weather_Weekly_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>
