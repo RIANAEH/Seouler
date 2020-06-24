@@ -23,6 +23,7 @@ import android.location.Location
 import android.os.Looper
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import com.example.seouler.dataClass.User
 import com.google.android.gms.location.*
 import com.example.seouler.dataClass.Location as LocationData
 
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     var locationPermittedAll = false
     var myLocation : LocationData = LocationData(1.1, 1.1)
+    var USERID = System.currentTimeMillis()
+    var USERNAME = ""
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
     var iti_intent = Intent() // Itinerary Activity send
@@ -71,12 +74,34 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
-        /* 임시 UserId 사용 */
         /* 안드로이드 단말 번호를 UserId로 사용 */
-        var tm : TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        var androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        val USERID : Long = 1592656608691
+        /* DB에서 저장된 정보가 있는지 확인 후 없으면 uid를 새로 생성*/
+
+        USERNAME = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        Log.d("MainActivity-userId", "USERNAME : ${USERNAME}")
+        var isThere = false
+        var userRef = FirebaseDatabase.getInstance().getReference("user")
+        var userValueEventListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(userSnapshot: DataSnapshot) {
+                for(data in userSnapshot.children){
+                    if(data.child("name").value.toString() == USERNAME){
+                        Log.d("MainActivity-userId", "저장된 정보가 있습니다.")
+                        USERID = data.child("userId").value as Long
+                        isThere = true
+                    }
+                }
+                //없으면 DB에 추가
+                if(!isThere){
+                    userRef.child("${USERID}").setValue(User(false, USERNAME, USERID, USERID))
+                }
+            }
+
+        }
+        userRef.addListenerForSingleValueEvent(userValueEventListener)
 
         /* MainActivity에서 먼저 DB로부터 필요한 데이터 읽어오는 과정 필요 */
         //loadMyChattingRoom(USERID)
