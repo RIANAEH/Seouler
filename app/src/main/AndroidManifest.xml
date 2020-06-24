@@ -19,6 +19,9 @@
 
         <activity android:name=".ChattingHomeActivity">
         </activity>
+        <activity android:name=".PlaceDetailActivity"/>
+        <activity android:name=".PlaceDetailIconActivity"/>
+        <activity android:name=".PlaceLikingActivity"/>
 
     </application>
 

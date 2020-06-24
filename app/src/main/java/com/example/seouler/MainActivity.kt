@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mainSearchButton.setOnClickListener {
-            val detailUITestIntent = Intent(this, PlaceDetailActivity::class.java)
+            val detailUITestIntent = Intent(this, PlaceDetailIconActivity::class.java)
             startActivity(detailUITestIntent)
         }
     }
