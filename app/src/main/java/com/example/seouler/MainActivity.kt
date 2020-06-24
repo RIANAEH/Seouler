@@ -117,13 +117,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        mainItineraryButton.setOnClickListener {
-            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
-            //cc.execute()
-
-            startActivity(iti_intent)
-
-
+        mainSearchButton.setOnClickListener {
+            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
+            startActivity(testDetailIntent)
         }
     }
 

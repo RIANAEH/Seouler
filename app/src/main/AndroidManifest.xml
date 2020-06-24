@@ -30,6 +30,9 @@
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
         <activity android:name=".Weather_MainActivity"/>
+        <activity android:name=".PlaceLikingActivity"/>
+        <activity android:name=".PlaceDetailIconActivity"/>
+        <activity android:name=".PlaceDetailActivity"/>
         <service
             android:name=".Chatting.FetchAddressIntentService"
             android:exported="false"/>
