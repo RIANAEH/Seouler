@@ -142,6 +142,7 @@ class ChattingHomeActivity : AppCompatActivity() {
                                     partSnapshot.child("owner").value as Long,
                                     partSnapshot.child("locationX").value as Double,
                                     partSnapshot.child("locationY").value as Double,
+                                    partSnapshot.child("locationName").value.toString(),
                                     partSnapshot.child("locationCertified").value as Boolean,
                                     partSnapshot.child("timestamp").value as Long,
                                     partSnapshot.child("uid").value as Long
