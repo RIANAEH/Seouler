@@ -40,7 +40,20 @@ class ChattingHomeActivity : AppCompatActivity() {
         scope.launch(Dispatchers.Default) {
             // 기존 CoroutineScope 는 유지하되, 작업만 백그라운드로 처리
         }
-        loadChattingRoom(intent.extras!!["userId"] as Long)
+
+        var userRef = FirebaseDatabase.getInstance().getReference("user")
+        var userValueEventListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                loadChattingRoom(intent.extras!!["userId"] as Long)
+            }
+
+        }
+        userRef.addValueEventListener(userValueEventListener)
+
         adapter = ChattingHomeAdapter()
         adapter.userId = intent.extras!!["userId"] as Long
         adapter.listData = chattingRoomList
@@ -92,18 +105,7 @@ class ChattingHomeActivity : AppCompatActivity() {
         var partData : ArrayList<Participation> = ArrayList()
         var myRoomIDList : ArrayList<Long> = ArrayList()
 
-        var userRef = FirebaseDatabase.getInstance().getReference("user")
-        var userValueEventListener = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
 
-            override fun onDataChange(p0: DataSnapshot) {
-                adapter.notifyDataSetChanged()
-            }
-
-        }
-        userRef.addValueEventListener(userValueEventListener)
 
         val partRef = FirebaseDatabase.getInstance().getReference("participation")
         val valueEventListener = object : ValueEventListener {

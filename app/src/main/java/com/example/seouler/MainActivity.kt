@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
 
         }
         userRef.addListenerForSingleValueEvent(userValueEventListener)
+        Thread.sleep(1000)
 
         /* MainActivity에서 먼저 DB로부터 필요한 데이터 읽어오는 과정 필요 */
         //loadMyChattingRoom(USERID)
