@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.github.mikephil.charting.utils.Utils.init
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.model.value.NullValue
 import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -36,6 +37,8 @@ var exclist = arrayListOf<a_exchange>()
 
 
 class Recycle_MainActivity : AppCompatActivity() {
+
+    var planlist = arrayListOf<a_plan>()
     var set_rate_index = 0
     val lm = LinearLayoutManager(this)
 
@@ -57,27 +60,33 @@ class Recycle_MainActivity : AppCompatActivity() {
             this.month = monthOfYear + 1
             this.day = dayOfMonth
             lcDate_set = LocalDate.of(this.year, this.month, this.day)
+            update_setDate(lcDate_set)
+            UpdatePlanListFromFirestore(mAdapter)
+
         }
 
 
-     var planlist = arrayListOf<a_plan>()
 
     /*00000000000000000000000000000000000000000000000000000000000000*/
     var uid = 2 // TEST
     var firestore = FirebaseFirestore.getInstance()
     var cUsersRef = firestore.collection("Users")
     lateinit var dUserPlanRef: DocumentReference
-
+    lateinit var mAdapter : MainRvAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_recycle_main)
         set_rate_index = intent.getIntExtra("SetRateIndex", 0)
-
-
-
+        //API 활성화//
         var weather_async = Weather_Async(this) // API
         var rate_async = Rate_Async(this, set_rate_index)
+        weather_async.execute()
+        rate_async.execute()
+
+        //파이어스토어 업데이트
 
         //tv_date.text = year.toString() + "/ " + month.toString() + "/ " + day.toString()
         tv_date.text = date_to_string(year, month, day, "/ ")
@@ -90,17 +99,15 @@ class Recycle_MainActivity : AppCompatActivity() {
 
         }
 
-        weather_async.execute()
-        rate_async.execute()
 
-        //날씨
+        //날씨 클릭리스너
         simple_weather.setOnClickListener {
             val go_to_weather_intent = Intent(applicationContext, Weather_MainActivity::class.java)
             startActivity(go_to_weather_intent)
         }
 
 
-        //환율
+        //환율 클릭 리스너
         simple_exc.setOnClickListener {
             val go_to_exc_intent = Intent(applicationContext, Exc_Recycle_MainActivity::class.java)
             startActivityForResult(go_to_exc_intent, 1) //////
@@ -114,16 +121,38 @@ class Recycle_MainActivity : AppCompatActivity() {
             tv_exchangeRate.text = "Timeout"
         }
 
-
+        //일정추가버튼 리스너
         btn_addPlan.setOnClickListener {
             var go_to_add_intent = Intent(applicationContext, PlanModifyActivity::class.java)
             go_to_add_intent.putExtra("ACT", "add")
             go_to_add_intent.putExtra("position" , -1)
+            go_to_add_intent.putExtra("date_y", this.year)
+            go_to_add_intent.putExtra("date_m", this.month)
+            go_to_add_intent.putExtra("date_d", this.day)
             startActivityForResult(go_to_add_intent, 2)
         }
 
-        //일정
-        val mAdapter = MainRvAdapter(this, planlist)
+        // 1. UID
+
+
+        btn_left.setOnClickListener {
+            lcDate_set = lcDate_set.minusDays(1)
+            update_setDate(lcDate_set)
+            UpdatePlanListFromFirestore(mAdapter)
+        }
+
+        btn_right.setOnClickListener {
+            lcDate_set = lcDate_set.plusDays(1)
+            update_setDate(lcDate_set)
+            UpdatePlanListFromFirestore(mAdapter)
+        }
+
+        recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
+        recycler_view.setHasFixedSize(true)
+
+
+        //일정 recyclerview 설정 -어댑터
+        mAdapter = MainRvAdapter(this, planlist)
         mAdapter.setOnItemClickListener(object : MainRvAdapter.OnItemClickListener {
             override fun onItemClick(
                 v: View?,
@@ -154,30 +183,17 @@ class Recycle_MainActivity : AppCompatActivity() {
                 }
             }
         })
-
-        UpdatePlanListFromFirestore()
-
-        // 1. UID
+        UpdatePlanListFromFirestore(mAdapter)
+        recycler_view.adapter = mAdapter
 
         mAdapter.notifyDataSetChanged()
 
-        btn_left.setOnClickListener {
-            lcDate_set = lcDate_set.minusDays(1)
-            update_setDate(lcDate_set)
-        }
 
-        btn_right.setOnClickListener {
-            lcDate_set = lcDate_set.plusDays(1)
-            update_setDate(lcDate_set)
-        }
-
-        recycler_view.adapter = mAdapter
-        recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
-        recycler_view.setHasFixedSize(true)
     }
 
-     fun UpdatePlanListFromFirestore() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+     fun UpdatePlanListFromFirestore(mAdapter :MainRvAdapter) {
+         planlist.removeAll(planlist)
+
         var cUserTask = cUsersRef
             .whereEqualTo("uid", uid) // UID SEARCH
             .get()
@@ -202,10 +218,13 @@ class Recycle_MainActivity : AppCompatActivity() {
                                 var tmp_dest = document.data.get("destName") as String
 
                                 planlist.add(a_plan(tmp_time, tmp_dest, document.id, tmp_geo))
-                                println("<BIND> In RecycleMain_ $planlist")
-                                //mAdapter.notifyDataSetChanged();
+
+                                //mAdapter.notifyDataSetChanged()
 
                             }
+                            println("<BIND> In RecycleMain_ $planlist")
+                            mAdapter.notifyDataSetChanged()
+                            onResume()
                         }
 
                 }
@@ -303,7 +322,10 @@ class Recycle_MainActivity : AppCompatActivity() {
 
                 } else { //신규추가
                     val docRef = dUserPlanRef.collection(strDate)
-
+                    docRef.whereEqualTo("destName", dest).whereEqualTo("time",time).get()
+                        .addOnSuccessListener { documentReference ->
+                            println("<PRINT> documentReference : ${documentReference.documents}")
+                        }
                     docRef.add(samplePlan)
                         .addOnSuccessListener { documentReference ->
                             println("DocumentSnapshot added with ID: ${docId}")
@@ -313,9 +335,8 @@ class Recycle_MainActivity : AppCompatActivity() {
                         }
                 }
 
-                UpdatePlanListFromFirestore()
+                UpdatePlanListFromFirestore(mAdapter)
                 recycler_view.adapter?.notifyDataSetChanged()
-                onResume()
             }
 
 
