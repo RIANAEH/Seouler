@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import com.example.seouler.R
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.activity_iti_main.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 

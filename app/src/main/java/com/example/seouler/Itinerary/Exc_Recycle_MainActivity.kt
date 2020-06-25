@@ -25,15 +25,11 @@ class Exc_Recycle_MainActivity : AppCompatActivity() {
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exc_recycle_main)
-
+        var set_rate_index = 0 //default
         val intent = Intent()
-
-
 
         val mAdapter = Exc_MainRvAdapter(this, exclist)
         mAdapter.setOnItemClickListener(object : Exc_MainRvAdapter.OnItemClickListener {
@@ -49,6 +45,7 @@ class Exc_Recycle_MainActivity : AppCompatActivity() {
                     builder.setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
                         intent.putExtra("exc_rateUnit",exclist[position].rateUnit)
                         intent.putExtra("exc_exchange_rate",exclist[position].exchangeRate)
+                        intent.putExtra("SetRateIndex", position)
                         set_rate_index = position
                         this@Exc_Recycle_MainActivity.setResult(Activity.RESULT_OK,intent)
                         this@Exc_Recycle_MainActivity.finish()
@@ -70,9 +67,12 @@ class Exc_Recycle_MainActivity : AppCompatActivity() {
         recycler_view.layoutManager = lm
         recycler_view.setHasFixedSize(true)
 
-        
-        
+
     }
+
+
+
+
 
 
 }
