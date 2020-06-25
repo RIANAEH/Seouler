@@ -72,6 +72,9 @@ class PlanModifyActivity : AppCompatActivity() {
             time_picker.hour = oldtime_h
             time_picker.minute = oldtime_m
 
+         //   date_picker. = intent_from_modify.getIntExtra("date_y")
+
+
 
             //*****목적지*****//
             var destination = intent_from_modify.getStringExtra("destination")
@@ -96,9 +99,9 @@ class PlanModifyActivity : AppCompatActivity() {
             intent_to_main.putExtra("position",intent_from_modify.getIntExtra("position",-1))
             intent_to_main.putExtra("time_h", hour)
             intent_to_main.putExtra("time_m", minute)
-            intent_to_main.putExtra("date_y", thisYear)
-            intent_to_main.putExtra("date_m", month+1)
-            intent_to_main.putExtra("date_d", day)
+            intent_to_main.putExtra("date_y", date_picker.year)
+            intent_to_main.putExtra("date_m", date_picker.month+1)
+            intent_to_main.putExtra("date_d", date_picker.dayOfMonth)
             intent_to_main.putExtra("dest", destination)
             intent_to_main.putExtra("docId", docid)
             setResult(Activity.RESULT_OK,intent_to_main)

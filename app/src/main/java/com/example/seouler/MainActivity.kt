@@ -123,8 +123,7 @@ class MainActivity : AppCompatActivity() {
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
             iti_intent.putExtra("SetRateIndex", set_rate_index)
             //cc.execute()
-
-            startActivity(iti_intent)
+            //startActivity(iti_intent)
             startActivityForResult(iti_intent,2)
 
 
