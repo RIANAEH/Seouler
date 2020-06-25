@@ -29,13 +29,11 @@ class PlaceDetailActivity : AppCompatActivity() {
 
         val detailItemList = findViewById<LinearLayout>(R.id.detailItemCarrier)
 
-        /*
         // 테스트용으로 프래그먼트 불러오기
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
-        */
 
         try {
             // API에서 정보를 가져와 프래그먼트로 추가하기
