@@ -6,21 +6,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-<<<<<<< Updated upstream
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.dataClass.ChattingRoom
 import com.example.seouler.fragments.DetailItemFragment
-import kotlinx.android.synthetic.main.activity_chatting_home.*
 import kotlinx.android.synthetic.main.activity_detail.*
 import java.util.zip.Inflater
-=======
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 import org.json.JSONArray
->>>>>>> Stashed changes
 
 class PlaceDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
