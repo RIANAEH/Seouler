@@ -4,6 +4,7 @@ package com.example.seouler
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import com.example.seouler.R
@@ -18,9 +19,9 @@ import java.util.*
 class PlanModifyActivity : AppCompatActivity() {
     private var calendar = Calendar.getInstance()
 
-    private val thisYear = calendar.get(Calendar.YEAR)
-    private val month = calendar.get(Calendar.MONTH)
-    private val day = calendar.get(Calendar.DAY_OF_MONTH)
+    private var thisYear = calendar.get(Calendar.YEAR)
+    private var month = calendar.get(Calendar.MONTH)
+    private var day = calendar.get(Calendar.DAY_OF_MONTH)
     private var hour = calendar.get(Calendar.HOUR_OF_DAY)
     private var minute = calendar.get(Calendar.MINUTE)
 
@@ -35,6 +36,7 @@ class PlanModifyActivity : AppCompatActivity() {
 
         intent_from_modify = intent///////#######@@//!!!!!!!!!!!//위험///////////
         time_picker.setOnTimeChangedListener(myTimeListener)
+        date_picker.setOnDateChangedListener(myDateListener)
 
 
 
@@ -78,6 +80,10 @@ class PlanModifyActivity : AppCompatActivity() {
             intent_to_main.putExtra("position",intent_from_modify.getIntExtra("position",-1))
             intent_to_main.putExtra("time_h", hour)
             intent_to_main.putExtra("time_m", minute)
+            intent_to_main.putExtra("date_y", thisYear)
+            intent_to_main.putExtra("date_m", month+1)
+            intent_to_main.putExtra("date_d", day)
+            intent_to_main.putExtra("dest", destination)
             setResult(Activity.RESULT_OK,intent_to_main)
             finish()
         }
@@ -98,6 +104,13 @@ class PlanModifyActivity : AppCompatActivity() {
         this.hour = hourOfDay
         this.minute = minute
         //Toast.makeText(this,"CHANGE "+hourOfDay, Toast.LENGTH_SHORT).show()
+
+    }
+
+    private val myDateListener = DatePicker.OnDateChangedListener(){ datePicker, year, month, day ->
+        this.thisYear = year
+        this.month = month
+        this.day = day
 
     }
 

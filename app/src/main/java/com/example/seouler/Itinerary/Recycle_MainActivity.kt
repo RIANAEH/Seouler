@@ -15,8 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
+import com.github.mikephil.charting.utils.Utils.init
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,10 +26,9 @@ import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.*
 import javax.net.ssl.*
+import kotlin.reflect.typeOf
 
 
 var exclist = arrayListOf<a_exchange>()
@@ -45,13 +45,13 @@ class Recycle_MainActivity : AppCompatActivity() {
     private var month = lcDate.monthValue//calendar.get(Calendar.MONTH)
     private var day = lcDate.dayOfMonth //calendar.get(Calendar.DAY_OF_MONTH)
 
-    lateinit var firestore : FirebaseFirestore
 
 
     var tformat = SimpleDateFormat("h:mm a")
 
     private val dateSetListener = DatePickerDialog.OnDateSetListener(){ datePicker: DatePicker, year:Int, monthOfYear: Int, dayOfMonth: Int ->
-        tv_date.setText(year.toString() + "/ " + (monthOfYear+1).toString() + "/ " + dayOfMonth.toString());
+        //tv_date.setText(year.toString() + "/ " + (monthOfYear+1).toString() + "/ " + dayOfMonth.toString());
+        tv_date.text = date_to_string(year, monthOfYear+1, dayOfMonth, "/ ")
         this.year = year
         this.month = monthOfYear + 1
         this.day = dayOfMonth
@@ -60,35 +60,27 @@ class Recycle_MainActivity : AppCompatActivity() {
 
 
 
-    private var planlist = arrayListOf<a_plan>(
-        a_plan("11:00 AM", "Noryangjin", "a"),
-        a_plan("12:00 AM", "Insadong", "b"),
-        a_plan("1:00 PM", "Gangnam", "c"),
-        a_plan("2:00 PM", "Yongsan", "d"),
-        a_plan("3:00 PM", "Wangsimni", "e"),
-        a_plan("4:00 PM", "Cheongdam", "f"),
-        a_plan("5:00 PM", "Jongmyo", "g"),
-        a_plan("6:00 PM", "Namdaemoon", "b"),
-        a_plan("7:00 PM", "Dongdaemoon", "c"),
-        a_plan("8:00 PM", "Seoul-Station", "d"),
-        a_plan("9:00 PM", "Jamsil", "e"),
-        a_plan("10:00 PM", "Soongsil Univ", "f")
-    )
+    private var planlist = arrayListOf<a_plan>()
 
     /*00000000000000000000000000000000000000000000000000000000000000*/
+    var uid = 2 // TEST
+    var firestore = FirebaseFirestore.getInstance()
+    var cUsersRef = firestore.collection("Users")
+    lateinit var dUserPlanRef : DocumentReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycle_main)
         set_rate_index = intent.getIntExtra("SetRateIndex",0 )
 
-        //firestore for Iti
-        firestore = FirebaseFirestore.getInstance()
+
 
         var weather_async = Weather_Async(this) // API
         var rate_async = Rate_Async(this, set_rate_index)
 
-        tv_date.text = year.toString() + "/ " + month.toString() + "/ " + day.toString()
+        //tv_date.text = year.toString() + "/ " + month.toString() + "/ " + day.toString()
+        tv_date.text = date_to_string(year, month, day, "/ ")
 
         tv_date.setOnClickListener{
             //calendar.get(Calendar.YEAR) //tv_date click
@@ -136,14 +128,48 @@ class Recycle_MainActivity : AppCompatActivity() {
                     //Toast.makeText(applicationContext,"position : "+position, Toast.LENGTH_SHORT).show()
                     var go_to_modify_intent = Intent(applicationContext, PlanModifyActivity::class.java)
                     go_to_modify_intent.putExtra("position",position) //일정 순번
-                    go_to_modify_intent.putExtra("time", planlist[position].time) //시간
-                    go_to_modify_intent.putExtra("destination",planlist[position].destination) //목적지
+                    //go_to_modify_intent.putExtra("time", planlist[position].time) //시간
+                    //go_to_modify_intent.putExtra("destination",planlist[position].destination) //목적지
 
                     startActivityForResult(go_to_modify_intent, 2)
 
                 }
             }
         })
+
+        // 1. UID
+        var cUserTask = cUsersRef
+            .whereEqualTo("uid", uid) // UID SEARCH
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) { //UID FOUND
+                    println( "<firestore> getDoc ${document.id} => ${document.data}")
+                    dUserPlanRef = document.reference                                       // DOC REF INIT
+                    println("<firestore> $year, $month, $day")
+                    dUserPlanRef.collection(date_to_string(year, month, day , "-"))
+                        .get()
+                        .addOnSuccessListener { result ->
+                            for (document in result) {
+                                println("<firestore> Success : ${document.id} => ${document.data}")
+
+                                var tmp_t = document.data.get("time") as Map<String, Unit>
+                                var tmp_time = LocalTime.of((tmp_t.get("hour") as Long).toInt(), (tmp_t.get("minute") as Long).toInt())
+                                var tmp_geo = document.data.get("geoLatlon") as GeoPoint
+                                var tmp_dest = document.data.get("destName") as String
+
+                                planlist.add(a_plan(tmp_time, tmp_dest, document.id, tmp_geo))
+                                println("<BIND> In RecycleMain_ $planlist")
+                                mAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+
+                }
+            }
+            .addOnFailureListener { exception ->
+                println("Error getting documents: $exception")
+            }
+        mAdapter.notifyDataSetChanged()
 
         btn_left.setOnClickListener{
             lcDate_set = lcDate_set.minusDays(1)
@@ -162,11 +188,10 @@ class Recycle_MainActivity : AppCompatActivity() {
     }
 
     private fun update_setDate(WlcDate_set : LocalDate){
-
         this.year = WlcDate_set.year
         this.month = WlcDate_set.monthValue
         this.day = WlcDate_set.dayOfMonth
-        tv_date.text = this.year.toString()  + "/ " +  this.month.toString()  + "/ " +  this.day.toString()
+        tv_date.text = date_to_string(this.year, this.month, this.day, "/ ")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,11 +210,35 @@ class Recycle_MainActivity : AppCompatActivity() {
         else if(requestCode == 2 && resultCode == Activity.RESULT_OK){
             if(data != null){
                 //planlist[data.getIntExtra("position",-1)].time
-                val docRef = firestore.collection("Users").document("User").collection("2020-6-25")
+
+                var tmp_h= data.getIntExtra("time_h", 0)
+                var converted_h = tmp_h
+                var tmp_m = data.getIntExtra("time_m",0)
+                var date_y = data.getIntExtra("date_y",0)
+                var date_m = data.getIntExtra("date_m",0)
+                var date_d = data.getIntExtra("date_d",0)
+                var time = LocalTime.of(tmp_h, tmp_m)
+                var tmp_a = ""
+                if(tmp_h > 12){
+                    converted_h = tmp_h - 12
+                    tmp_a = "PM"
+
+                }
+                else {
+                    tmp_a = "AM"
+                }
+
+                var dest = data.getStringExtra("dest") //목적지
+                var strTime = "%d".format(converted_h) + ":" + "%02d".format(tmp_m) + " " + tmp_a
+                //var strDate = date_y.toString()+ "-" + date_m.toString() + "-" + date_d.toString() // Doc
+                var strDate = date_to_string(date_y, date_m, date_d, "-")
+
+
+                val docRef = dUserPlanRef.collection(strDate)
 
                 val samplePlan = hashMapOf(
-                    "time" to LocalTime.of(11,30),
-                    "destName" to "SEOUL",
+                    "time" to time,
+                    "destName" to dest ,
                     "geoLatlon" to GeoPoint(34.0, 66.0)
                 )
                 // DB UPDATE
@@ -205,17 +254,12 @@ class Recycle_MainActivity : AppCompatActivity() {
 
 
                 // DONE UPDATE
-                var tmp_h= data.getIntExtra("time_h", 0)
-                var tmp_m = data.getIntExtra("time_m",0)
 
-                var tmp_c = Calendar.getInstance()
-                tmp_c.set(year,month,day,tmp_h,tmp_m,0)
-                var strTime = tformat.format(tmp_c.time)
 
 
 
                 //Toast.makeText(this,"AFTER "+strTime,Toast.LENGTH_SHORT).show()
-                planlist[data.getIntExtra("position",-1)].time = strTime
+                //planlist[data.getIntExtra("position",-1)].time = strTime
                 recycler_view.adapter?.notifyDataSetChanged()
                 onResume()
             }
@@ -224,12 +268,29 @@ class Recycle_MainActivity : AppCompatActivity() {
         }
     }
 
+    fun time_to_string_A(hour : Int, minute : Int) : String{
+        var strTmp = ""
+        var a = hour
+        if (a > 12){
+            a = a - 12
+            strTmp = "PM"
+        }
+        else {
+            strTmp = "AM"
+        }
+
+        return a.toString() + ":" + minute.toString() + " " + strTmp
+    }
     override fun onBackPressed() {
 
         intent.putExtra("SetRateIndex", set_rate_index)
         this.setResult(Activity.RESULT_OK,intent)
         super.onBackPressed()
         //this.finish()
+    }
+
+    fun date_to_string(year: Int, month: Int, day: Int, c: String) : String{
+        return year.toString() + c + month.toString() + c + day.toString()
     }
 }
 
@@ -246,10 +307,6 @@ class Recycle_MainActivity : AppCompatActivity() {
                     var response_json = VolleyService_rate.response_json
 
                     println("환율쓰2....JSON: $response_json")
-                    //for (i in 0 until response_json.length()){
-                    //    var response_json_obj : JSONObject = response_json.get(i) as JSONObject
-                    //    exclist.add(jsonToExc(response_json_obj.get("cur_unit") as String, response_json_obj.get("kftc_deal_bas_r") as String))
-                    //}
 
                     act.tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
                     act.tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
@@ -263,17 +320,6 @@ class Recycle_MainActivity : AppCompatActivity() {
             return null
         }
 
-        override fun onPostExecute(result: List<String>?) {
-            super.onPostExecute(result)
-            println("환율 난 해방이다 <야호>")
-
-
-        }
-
-    //    fun jsonToExc(cur_unit: String, kftc: String) : a_exchange{
-     //       val exc = a_exchange(cur_unit, kftc)
-     //       return exc
-     //   }
 
     }
 
