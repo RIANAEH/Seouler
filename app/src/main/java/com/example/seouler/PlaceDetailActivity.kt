@@ -35,12 +35,12 @@ class PlaceDetailActivity : AppCompatActivity() {
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
         layoutInflater.inflate(R.layout.fragment_detail_item, detailItemList, true)
 
-        // API에서 정보를 가져와 프래그먼트로 추가하기
-        val servUrl = "http://api.visitkorea.or.kr/openapi/service/rest/EngService/searchStay?"
-        val apiKey = "serviceKey=" // 직접 입력하세요
-        val parms = "&numOfRows=10&pageNo=1&MobileOS=AND&MobileApp=Seouler2020&listYN=Y&arrange=A&areaCode=1&sigunguCode=1&hanOk=&benikia=&goodStay=&modifiedtime="
-
         try {
+            // API에서 정보를 가져와 프래그먼트로 추가하기
+            val servUrl = "http://api.visitkorea.or.kr/openapi/service/rest/EngService/searchStay?"
+            val apiKey = "serviceKey=I23jHEEvrpNKlQiFjB8me4jV48AF6y2Sj0mGzBX0s4jce9OyTCgYqNi31f6LgQgncOTlVO6Wzal8vv96JHegig%3D%3D"
+            val parms = "&numOfRows=10&pageNo=1&MobileOS=AND&MobileApp=Seouler2020&listYN=Y&arrange=A&areaCode=1&sigunguCode=1&hanOk=&benikia=&goodStay=&modifiedtime="
+
             // JSON 받아오기 시도
             val compUrl = servUrl + apiKey + parms + "&_type=json"
             val queue = Volley.newRequestQueue(this)
@@ -60,5 +60,6 @@ class PlaceDetailActivity : AppCompatActivity() {
             Log.e("REST_API", "GET method failed: " + e.message);
             e.printStackTrace();
         }
+
     }
 }
