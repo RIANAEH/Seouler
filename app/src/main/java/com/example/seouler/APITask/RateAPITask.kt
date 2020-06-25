@@ -56,7 +56,7 @@ object VolleyService_rate{
         check11()
         println("<환율> url : $testUrl")
 
-        HttpsTrustManager.allowAllSSL()
+        Recycle_MainActivity.HttpsTrustManager.allowAllSSL()
 
         val testRequest = object : StringRequest(Method.GET, testUrl , Response.Listener { response ->
             println("<환율> 서버 Response 수신: $response")

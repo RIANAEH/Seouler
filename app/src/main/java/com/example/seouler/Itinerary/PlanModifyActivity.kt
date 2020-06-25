@@ -12,7 +12,9 @@ import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.activity_iti_main.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 
@@ -38,40 +40,54 @@ class PlanModifyActivity : AppCompatActivity() {
         time_picker.setOnTimeChangedListener(myTimeListener)
         date_picker.setOnDateChangedListener(myDateListener)
 
+        var act = intent_from_modify.getStringExtra("ACT")
+        var docid = ""
+        var destination = "tmp"
+        if (act == "modify")
+        {
+
+            //*******DOCID******//
+            docid = intent_from_modify.getStringExtra("docId") as String
+
+            //*******시간********//
+            var oldtime =intent_from_modify.getStringExtra("time") //h:mm a
+            var oldtime_h = oldtime.substring(0,oldtime.lastIndexOf(":")).toInt()
+            var oldtime_m = oldtime.substring(oldtime.lastIndexOf(":")+1,oldtime.lastIndexOf(" ")).toInt()
+            var oldtime_a = oldtime.substring(oldtime.lastIndexOf(" ")+1)
+
+            if(oldtime_a.equals("PM")||oldtime_a.equals("오후")){
+                oldtime_h=oldtime_h+12
+            }
+            if(oldtime_h==12 && (oldtime_a.equals("AM")||oldtime_a.equals("오전"))){
+                oldtime_h=0
+            }
+
+            if(oldtime_h==24 && (oldtime_a.equals("PM")||oldtime_a.equals("오후"))){
+                oldtime_h=12
+            }
+
+            var time = Calendar.getInstance()
+
+            time.set(thisYear,month,day,oldtime_h,oldtime_m,0)
+            time_picker.hour = oldtime_h
+            time_picker.minute = oldtime_m
 
 
+            //*****목적지*****//
+            var destination = intent_from_modify.getStringExtra("destination")
 
-        //*******시간********//
-        var oldtime =intent_from_modify.getStringExtra("time") //h:mm a
-        var oldtime_h = oldtime.substring(0,oldtime.lastIndexOf(":")).toInt()
-        var oldtime_m = oldtime.substring(oldtime.lastIndexOf(":")+1,oldtime.lastIndexOf(" ")).toInt()
-        var oldtime_a = oldtime.substring(oldtime.lastIndexOf(" ")+1)
+            tv_destination.text = destination
 
-        if(oldtime_a.equals("PM")||oldtime_a.equals("오후")){
-            oldtime_h=oldtime_h+12
+
         }
-        if(oldtime_h==12 && (oldtime_a.equals("AM")||oldtime_a.equals("오전"))){
-            oldtime_h=0
+        else if (act == "add"){
+            var lct = LocalDate.now()
+
+            time_picker.hour = 9
+            time_picker.minute = 0
+
+
         }
-
-        if(oldtime_h==24 && (oldtime_a.equals("PM")||oldtime_a.equals("오후"))){
-            oldtime_h=12
-        }
-
-
-
-        var time = Calendar.getInstance()
-
-        time.set(thisYear,month,day,oldtime_h,oldtime_m,0)
-        time_picker.hour = oldtime_h
-        time_picker.minute = oldtime_m
-
-
-        //*****목적지*****//
-        var destination = intent_from_modify.getStringExtra("destination")
-
-        tv_destination.text = destination
-
 
 
         btn_confirm.setOnClickListener {
@@ -84,6 +100,7 @@ class PlanModifyActivity : AppCompatActivity() {
             intent_to_main.putExtra("date_m", month+1)
             intent_to_main.putExtra("date_d", day)
             intent_to_main.putExtra("dest", destination)
+            intent_to_main.putExtra("docId", docid)
             setResult(Activity.RESULT_OK,intent_to_main)
             finish()
         }

@@ -165,9 +165,18 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF" />
+            android:background="#FFFFFF" >
+
+        </androidx.recyclerview.widget.RecyclerView>
 
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_addPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:text="Add" />
 
 </LinearLayout>
