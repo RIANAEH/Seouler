@@ -25,8 +25,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import android.location.Location
-import android.os.Looper
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.example.seouler.dataClass.User
@@ -121,6 +119,21 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
+        mainItineraryButton.setOnClickListener {
+            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            iti_intent.putExtra("SetRateIndex", set_rate_index)
+            //cc.execute()
+
+            startActivity(iti_intent)
+            startActivityForResult(iti_intent,2)
+
+
+        }
+
+        mainSearchButton.setOnClickListener {
+            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
+            startActivity(testDetailIntent)
+        }
 
         mainSearchButton.setOnClickListener {
             val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
