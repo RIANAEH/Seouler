@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         updateLocation()
 
-        var cc = Weather_Async(this) // API Weather
+        var cc = Recycle_MainActivity.Weather_Async(this) // API Weather
         val lm: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager //GPS
         val gpsLocationListener = object : LocationListener {
             override fun onLocationChanged(location: Location?) {
