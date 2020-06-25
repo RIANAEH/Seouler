@@ -1,5 +1,6 @@
 package com.example.seouler.Recommend
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
@@ -11,6 +12,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class GetContentTask(val list_c: ArrayList<ContentItem>, val contentTypedId: String, val cat1: String, val cat2: String, val cat3: String?) : AsyncTask<Any?, Any?, Any?>() {
+    var firstimage: Bitmap? = null
+
     override fun doInBackground(vararg params: Any?): Any? {
         // 현재 기본적으로 20개의 content를 가져오며 numOfRows를 변경하여 개수를 수정할 수 있다.
         var urlString: String
@@ -49,12 +52,13 @@ class GetContentTask(val list_c: ArrayList<ContentItem>, val contentTypedId: Str
             for(i in 0 until jarray.length()) {
                 val obj = jarray.getJSONObject(i)
                 val contentid = obj.getString("contentid")
-                val firstimageurl = obj.getString("firstimage")
+                //val firstimageurl = obj.getString("firstimage")
+                firstimage = BitmapFactory.decodeStream(URL(obj.getString("firstimage")).openStream())
                 val readcount = obj.getString("readcount").toInt()
                 val title = obj.getString("title")
 
                 // 이미지 url로부터 이미지를 bitmap으로 받아온다.
-                val firstimage = BitmapFactory.decodeStream(URL(firstimageurl).openStream())
+                //val firstimage = BitmapFactory.decodeStream(URL(firstimageurl).openStream())
 
 
                 list_c.add(ContentItem(contentid, firstimage, readcount, title))

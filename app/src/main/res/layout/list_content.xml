@@ -24,12 +24,11 @@
 
             <ImageButton
                 android:id="@+id/favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:background="#00BAB6B6"
-                app:srcCompat="@android:drawable/btn_star_big_off" />
+                android:background="@drawable/heart_unlike" />
 
             <ImageView
                 android:id="@+id/thumbnail"

@@ -17,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Recommend.Recommend_MainActivity"></activity>
+        <activity android:name=".PlaceLikingActivity"></activity>
+        <activity android:name=".PlaceDetailActivity" />
+        <activity android:name=".Recommend.Recommend_MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
