@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.rvitem_chattinghome.view.*
 class SearchRoomAdapter : RecyclerView.Adapter<SearchRoomHolder>(){
     var listData = ArrayList<ChattingRoom>()
     var userId : Long = 0
-    lateinit var createRoomContext : Context
+    lateinit var searchRoomContext : Context
     var myChattingRoomMessageList = ArrayList<ArrayList<Message>>()
 
     override fun getItemCount(): Int {
@@ -25,7 +25,7 @@ class SearchRoomAdapter : RecyclerView.Adapter<SearchRoomHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchRoomHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rvitem_chattinghome, parent, false)
         val holder = SearchRoomHolder(view)
-        holder.createRoomContext = createRoomContext
+        holder.searchRoomContext = searchRoomContext
         return holder
     }
 
@@ -35,7 +35,7 @@ class SearchRoomAdapter : RecyclerView.Adapter<SearchRoomHolder>(){
     }
 }
 class SearchRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-    lateinit var createRoomContext : Context
+    lateinit var searchRoomContext : Context
     fun setChattingRoom(room : ChattingRoom, position : Int){
         itemView.chattingroomCellButton.text = "${room.title}"
         var time : Long = ((System.currentTimeMillis()-room.timestamp)/1000)/60

@@ -25,6 +25,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import android.location.Location
+import android.os.Looper
+import android.provider.Settings
+import android.telephony.TelephonyManager
+import com.example.seouler.dataClass.User
+import com.google.android.gms.location.*
 import com.example.seouler.dataClass.Location as LocationData
 
 
@@ -34,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     var locationPermittedAll = false
     var myLocation : LocationData = LocationData(1.1, 1.1)
+    var USERID = System.currentTimeMillis()
+    var USERNAME = ""
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
     var set_rate_index : Int = 0
@@ -71,9 +79,35 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        /* 안드로이드 단말 번호를 UserId로 사용 */
+        /* DB에서 저장된 정보가 있는지 확인 후 없으면 uid를 새로 생성*/
 
-        /* 임시 UserId 사용 */
-        val USERID : Long = 1592656608691
+        USERNAME = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        Log.d("MainActivity-userId", "USERNAME : ${USERNAME}")
+        var isThere = false
+        var userRef = FirebaseDatabase.getInstance().getReference("user")
+        var userValueEventListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(userSnapshot: DataSnapshot) {
+                for(data in userSnapshot.children){
+                    if(data.child("name").value.toString() == USERNAME){
+                        Log.d("MainActivity-userId", "저장된 정보가 있습니다.")
+                        USERID = data.child("userId").value as Long
+                        isThere = true
+                    }
+                }
+                //없으면 DB에 추가
+                if(!isThere){
+                    userRef.child("${USERID}").setValue(User(false, USERNAME, USERID, USERID))
+                }
+            }
+
+        }
+        userRef.addListenerForSingleValueEvent(userValueEventListener)
+        Thread.sleep(1000)
 
         /* MainActivity에서 먼저 DB로부터 필요한 데이터 읽어오는 과정 필요 */
         //loadMyChattingRoom(USERID)
@@ -87,85 +121,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
-        btn_itinerary.setOnClickListener {
-            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
-            iti_intent.putExtra("SetRateIndex", set_rate_index)
-            //cc.execute()
 
-            startActivityForResult(iti_intent,2)
-
-
+        mainSearchButton.setOnClickListener {
+            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
+            startActivity(testDetailIntent)
         }
-    }
-    fun loadMyChattingRoom(USERID : Long){
-        var partData : ArrayList<Participation> = ArrayList()
-        var myRoomIDList : ArrayList<Long> = ArrayList()
-        val partRef = FirebaseDatabase.getInstance().getReference("participation")
-        val valueEventListener = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (partSnapshot in dataSnapshot.children) {
-                    Log.d("MainActivity", partSnapshot.toString())
-                    if(USERID == partSnapshot.child("userId").value as Long){
-                        Log.d("MainActivity","C read userId : ${partSnapshot.child("userId").value as Long}")
-                        partData.add(
-                            Participation(
-                                partSnapshot.child("userId").value as Long,
-                                partSnapshot.child("roomId").value as Long,
-                                partSnapshot.child("uid").value as Long
-                            )
-                        )
-                    }
-
-                }
-                for (i in 0 until partData.count()){
-                    //본인의 채팅방만 불러오기
-                    if(partData[i].userId == USERID){
-                        myRoomIDList.add(partData[i].roomId)
-                        Log.d("MainActivity", "D ${myRoomIDList[i]}")
-                    }
-                }
-            }
-
-        }
-        partRef.addValueEventListener(valueEventListener)
-
-
-        var roomRef = FirebaseDatabase.getInstance().getReference("chattingRoom")
-        val roomValueEventListener = object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                myChattingRoomList.clear()
-                for (partSnapshot in dataSnapshot.children) {
-                    for(i in 0 until myRoomIDList.count()){
-                        if(myRoomIDList[i] == partSnapshot.child("roomId").value as Long){
-                            Log.d("MainActiviry", "F Yes")
-                            myChattingRoomList.add(
-                                ChattingRoom(
-                                    partSnapshot.child("roomId").value as Long,
-                                    partSnapshot.child("title").value.toString(),
-                                    partSnapshot.child("description").value.toString(),
-                                    partSnapshot.child("owner").value as Long,
-                                    partSnapshot.child("locationX").value as Double,
-                                    partSnapshot.child("locationY").value as Double,
-                                    partSnapshot.child("locationCertified").value as Boolean,
-                                    partSnapshot.child("timestamp").value as Long,
-                                    partSnapshot.child("uid").value as Long
-                                )
-                            )
-                        }
-                    }
-                }
-                Log.d("MainActiviry","G room count : ${myChattingRoomList.count()}")
-            }
-
-        }
-        roomRef.addValueEventListener(roomValueEventListener)
     }
 
     fun checkPermission(){

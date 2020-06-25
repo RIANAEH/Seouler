@@ -44,13 +44,11 @@ class CreateRoomAcvitivy : AppCompatActivity() {
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                locationCertified = false
+
             }
 
         }
-        
         //현재 위치 받아오기 버튼 리스너
-
         createroomLocationImageButton.setOnClickListener {
             var rGeocoder = Geocoder(applicationContext, Locale.US)
             var rResultList : List<Address>? = null
@@ -63,11 +61,24 @@ class CreateRoomAcvitivy : AppCompatActivity() {
 
             } catch(e: IOException){
                 e.printStackTrace()
+                var builder = AlertDialog.Builder(this)
+                builder.setMessage("Failed to Find Your Location")
+                var createroomDialogListner = object : DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                    }
+
+                }
+                builder.setPositiveButton("OK", createroomDialogListner)
+                builder.show()
             }
-            if(rResultList != null) {
-//              createroomLocationSpinner.setSelection()
-                locationCertified = certifyLocation()
-                Log.d("location 역지오코딩", rResultList.toString())
+            if(rResultList != null && rResultList.count() > 0) {
+                Log.d("usbin", "${rResultList[0].subLocality}")
+                createroomLocationSpinner.setSelection(locationStringArray.indexOf("${rResultList[0].subLocality}"))
+                locationCertified = true
+                createroomLocationSpinner.isEnabled = false
+            }
+            else{
+                locationCertified = false
             }
         }
 
@@ -88,7 +99,6 @@ class CreateRoomAcvitivy : AppCompatActivity() {
                 var roomRef = FirebaseDatabase.getInstance().getReference("chattingRoom")
                 var uid = System.currentTimeMillis()
 
-                var thisLocation = LocationCustomData("", 1.1, 1.1)
                 StaticSeoulLocationData.data.get(createroomLocationSpinner.selectedItem.toString())?.let { it1 ->
                     var newRoom = ChattingRoom(
                         uid,
@@ -97,6 +107,7 @@ class CreateRoomAcvitivy : AppCompatActivity() {
                         intent.extras!!["userId"] as Long,
                         it1.locationX,
                         it1.locationY,
+                        createroomLocationSpinner.selectedItem.toString(),
                         locationCertified,
                         uid,
                         uid
@@ -120,13 +131,6 @@ class CreateRoomAcvitivy : AppCompatActivity() {
                 }
             }
         }
-    }
-    fun certifyLocation() : Boolean{
-        if(myLocation.toString() != LocationData(1.1, 1.1).toString()){
-            myLocation = intent.extras!!["myLocation"] as LocationData
-            return true
-        }
-        return false
     }
     fun setLocationStringArray(){
         locationStringArray = ArrayList(StaticSeoulLocationData.data.keys)

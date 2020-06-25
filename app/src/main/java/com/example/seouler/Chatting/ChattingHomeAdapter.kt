@@ -66,5 +66,6 @@ class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){
             roomIntent.putExtra("userId", userId)
             startActivity(chattingHomeContext, roomIntent, null)
         }
+        itemView.chattingroomCellLocationTextView.text = room.locationName
     }
 }
