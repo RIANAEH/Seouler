@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/placePreview"
         android:layout_width="377dp"
         android:layout_height="309dp"
         android:layout_marginStart="16dp"
@@ -33,38 +33,36 @@
         app:srcCompat="@drawable/e" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/placeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="TextView"
+        android:layout_marginTop="15dp"
+        android:text="Place Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/placePreview" />
 
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/placeRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/placeName" />
 
     <TextView
-        android:id="@+id/textView10"
-        android:layout_width="380dp"
-        android:layout_height="201dp"
+        android:id="@+id/placeDescription"
+        android:layout_width="374dp"
+        android:layout_height="178dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginBottom="24dp"
-        android:text="TextView"
+        android:text="Place Description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+        app:layout_constraintTop_toBottomOf="@+id/placeRating" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
