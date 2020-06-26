@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import com.example.seouler.Recommend.Recommend_MainActivity
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.example.seouler.dataClass.*
@@ -129,7 +130,12 @@ class MainActivity : AppCompatActivity() {
             iti_intent.putExtra("userId", USERID)
             startActivityForResult(iti_intent,2)
 
+        }
 
+        // 추천 페이지 버튼
+        btn_recommend.setOnClickListener {
+            val recommend_intent = Intent(this, Recommend_MainActivity::class.java)
+            startActivity(recommend_intent)
         }
 
         mainSearchButton.setOnClickListener {
