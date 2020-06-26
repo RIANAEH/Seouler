@@ -28,6 +28,7 @@ import com.example.seouler.dataClass.*
 import com.google.android.gms.location.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
+import java.lang.Thread.sleep
 import com.example.seouler.dataClass.Location as LocationData
 
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     var myChattingRoomMessageList : ArrayList<ArrayList<Message>> = ArrayList()
     val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     var locationPermittedAll = false
-    var myLocation : LocationData = LocationData(1.1, 1.1)
+    var myLocation : LocationData = LocationData(-200.0, -200.0)
     var USERID = System.currentTimeMillis()
     var USERNAME = ""
     private lateinit var fusedLocationClient:FusedLocationProviderClient
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         updateLocation()
 
-        var cc = Recycle_MainActivity.Weather_Async(this) // API Weather
         val lm: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager //GPS
         val gpsLocationListener = object : LocationListener {
             override fun onLocationChanged(location: Location?) {
@@ -62,11 +62,6 @@ class MainActivity : AppCompatActivity() {
                 myLocation.locationX = longitude!!
                 myLocation.locationY = latitude!!
                 Log.d("MainActivity_Location","location : ${myLocation.locationX},${myLocation.locationY}")
-                /*txtResult.setText(
-                    "위치 : " + provider + "\n"
-                            + "위도 : " + longitude + "\n"
-                            + "경도 : " + latitude + "\n"
-                )*/
             }
 
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -118,10 +113,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
-        mainItineraryButton.setOnClickListener {
+        mainItineraryButton.setOnClickListener {v ->
+
+            if(myLocation.locationX == -200.0 && myLocation.locationY == -200.0){
+
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, gpsLocationListener)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1f, gpsLocationListener)
+
+            }
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
             iti_intent.putExtra("SetRateIndex", set_rate_index)
             iti_intent.putExtra("userId", USERID)
+            iti_intent.putExtra("lon", myLocation.locationX)
+            iti_intent.putExtra("lat", myLocation.locationY)
             startActivityForResult(iti_intent,2)
 
 
@@ -195,7 +199,6 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var s = data?.getIntExtra("SetRateIndex", 9)
-        Toast.makeText(this, "$requestCode $resultCode $s", Toast.LENGTH_SHORT).show()
         if(requestCode == 2 && resultCode == Activity.RESULT_OK){ //
             if(data != null){
                 set_rate_index = data.getIntExtra("SetRateIndex",0)

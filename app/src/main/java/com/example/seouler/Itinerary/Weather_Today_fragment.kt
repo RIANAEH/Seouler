@@ -20,8 +20,8 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 
 
 class Weather_Today_fragment: Fragment() {
-    val timez = arrayOf("1:00", "2:00", "3:00", "4:00","5:00","6:00","7:00","8:00",
-        "9:00","10:00","11:00","12:00")
+    //val timez = arrayOf("1:00", "2:00", "3:00", "4:00","5:00","6:00","7:00","8:00",
+     //   "9:00","10:00","11:00","12:00")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,10 +29,10 @@ class Weather_Today_fragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //super.onCreateView(inflater, container, savedInstanceState)
-        val view =inflater.inflate(R.layout.fragment_weather_today,container,false)
+        val view = inflater.inflate(R.layout.fragment_weather_today, container, false)
 
 
-        var line_chart :LineChart = view.findViewById(R.id.xml_line_chart)
+        /*var line_chart :LineChart = view.findViewById(R.id.xml_line_chart)
 
 
 
@@ -112,10 +112,12 @@ class Weather_Today_fragment: Fragment() {
 
         line_chart.animateY(2000, Easing.EasingOption.EaseInCubic)
         line_chart.invalidate()
-
+*/
         return view
 
+
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
