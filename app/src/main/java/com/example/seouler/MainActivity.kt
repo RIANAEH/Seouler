@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                 myLocation.locationX = longitude!!
                 myLocation.locationY = latitude!!
                 Log.d("MainActivity_Location","location : ${myLocation.locationX},${myLocation.locationY}")
+                mainItineraryButton.isEnabled=true
             }
 
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -119,22 +120,24 @@ class MainActivity : AppCompatActivity() {
             startActivity(chattingRoomIntent)
         }
 
-        mainItineraryButton.setOnClickListener {v ->
 
-            if(myLocation.locationX == -200.0 && myLocation.locationY == -200.0){
 
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, gpsLocationListener)
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1f, gpsLocationListener)
+        mainItineraryButton.setOnClickListener {
+            if (myLocation.locationX == -200.0 && myLocation.locationY == -200.0) {
+                Toast.makeText(this, "Try again",Toast.LENGTH_SHORT).show()
+                //do nothing
+            } else {
+                val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+                iti_intent.putExtra("SetRateIndex", set_rate_index)
+                iti_intent.putExtra("userId", USERID)
+                iti_intent.putExtra("lon", myLocation.locationX)
+                iti_intent.putExtra("lat", myLocation.locationY)
+                startActivityForResult(iti_intent, 2)
 
             }
-            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
-            iti_intent.putExtra("SetRateIndex", set_rate_index)
-            iti_intent.putExtra("userId", USERID)
-            iti_intent.putExtra("lon", myLocation.locationX)
-            iti_intent.putExtra("lat", myLocation.locationY)
-            startActivityForResult(iti_intent,2)
-
         }
+
+
 
         // 추천 페이지 버튼
         btn_recommend.setOnClickListener {
