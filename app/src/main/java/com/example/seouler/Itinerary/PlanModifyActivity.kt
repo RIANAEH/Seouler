@@ -77,7 +77,6 @@ class PlanModifyActivity : AppCompatActivity() {
             time_picker.hour = oldtime_h
             time_picker.minute = oldtime_m
 
-            date_picker.init(intent_from_modify.getIntExtra("date_y",1), intent_from_modify.getIntExtra("date_m",1)-1,intent_from_modify.getIntExtra("date_d",1),myDateListener)
 
 
             //*****목적지*****//
@@ -91,6 +90,9 @@ class PlanModifyActivity : AppCompatActivity() {
             time_picker.hour = 9
             time_picker.minute = 0
         }
+
+        date_picker.init(intent_from_modify.getIntExtra("date_y",1), intent_from_modify.getIntExtra("date_m",1)-1,intent_from_modify.getIntExtra("date_d",1),myDateListener)
+
 
 
         btn_confirm.setOnClickListener {

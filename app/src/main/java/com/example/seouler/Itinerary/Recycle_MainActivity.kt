@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.seouler.dataClass.FirestoreRefs
 import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
 import com.google.firebase.firestore.DocumentReference
@@ -125,9 +124,9 @@ class Recycle_MainActivity : AppCompatActivity() {
             var go_to_add_intent = Intent(applicationContext, PlanModifyActivity::class.java)
             go_to_add_intent.putExtra("ACT", "add")
             go_to_add_intent.putExtra("position" , -1)
-            go_to_add_intent.putExtra("date_y", this.year)
-            go_to_add_intent.putExtra("date_m", this.month)
-            go_to_add_intent.putExtra("date_d", this.day)
+            go_to_add_intent.putExtra("date_y", lcDate_set.year)
+            go_to_add_intent.putExtra("date_m", lcDate_set.monthValue)
+            go_to_add_intent.putExtra("date_d", lcDate_set.dayOfMonth)
             startActivityForResult(go_to_add_intent, 2)
         }
 
