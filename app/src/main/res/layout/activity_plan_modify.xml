@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -73,16 +74,15 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
+        <EditText
             android:id="@+id/tv_destination"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
             android:layout_weight="1"
-            android:text="destination"
-            android:textAlignment="center"
-            android:textColor="#232323"
-            android:textSize="30sp"
-            tools:text="Noryangjin" />
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name" />
 
 
     </LinearLayout>
@@ -92,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Confirm" />
+        android:text="confirm" />
 
 
 </LinearLayout>

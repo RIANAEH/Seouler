@@ -30,7 +30,6 @@ class MainRvAdapter(val context: Context, val planlist : ArrayList<a_plan>) :
     }
 
     override fun getItemCount(): Int {
-        println("<BIND> item_size : ${planlist.size}")
         return planlist.size
     }
 

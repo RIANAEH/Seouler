@@ -4,12 +4,13 @@ package com.example.seouler
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import com.example.seouler.R
 import com.google.firebase.firestore.GeoPoint
-import kotlinx.android.synthetic.main.activity_iti_main.*
+import kotlinx.android.synthetic.main.activity_plan_modify.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -34,7 +35,7 @@ class PlanModifyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_iti_main)
+        setContentView(R.layout.activity_plan_modify)
 
         intent_from_modify = intent///////#######@@//!!!!!!!!!!!//위험///////////
         time_picker.setOnTimeChangedListener(myTimeListener)
@@ -43,17 +44,21 @@ class PlanModifyActivity : AppCompatActivity() {
         var act = intent_from_modify.getStringExtra("ACT")
         var docid = ""
         var destination = "tmp"
-        if (act == "modify")
+        var oldtime : String
+        var oldtime_h :Int
+        var oldtime_m :Int
+        var oldtime_a :String
+        if (act == "modify")  // 일정 수정일 경우
         {
 
             //*******DOCID******//
             docid = intent_from_modify.getStringExtra("docId") as String
 
             //*******시간********//
-            var oldtime =intent_from_modify.getStringExtra("time") //h:mm a
-            var oldtime_h = oldtime.substring(0,oldtime.lastIndexOf(":")).toInt()
-            var oldtime_m = oldtime.substring(oldtime.lastIndexOf(":")+1,oldtime.lastIndexOf(" ")).toInt()
-            var oldtime_a = oldtime.substring(oldtime.lastIndexOf(" ")+1)
+            oldtime = intent_from_modify.getStringExtra("time") //h:mm a
+            oldtime_h = oldtime.substring(0,oldtime.lastIndexOf(":")).toInt()
+            oldtime_m = oldtime.substring(oldtime.lastIndexOf(":")+1,oldtime.lastIndexOf(" ")).toInt()
+            oldtime_a = oldtime.substring(oldtime.lastIndexOf(" ")+1)
 
             if(oldtime_a.equals("PM")||oldtime_a.equals("오후")){
                 oldtime_h=oldtime_h+12
@@ -72,24 +77,19 @@ class PlanModifyActivity : AppCompatActivity() {
             time_picker.hour = oldtime_h
             time_picker.minute = oldtime_m
 
-         //   date_picker. = intent_from_modify.getIntExtra("date_y")
-
+            date_picker.init(intent_from_modify.getIntExtra("date_y",1), intent_from_modify.getIntExtra("date_m",1)-1,intent_from_modify.getIntExtra("date_d",1),myDateListener)
 
 
             //*****목적지*****//
-            var destination = intent_from_modify.getStringExtra("destination")
+            tv_destination.setText(intent_from_modify.getStringExtra("destination"))
 
-            tv_destination.text = destination
 
 
         }
-        else if (act == "add"){
+        else if (act == "add"){ // 일정 신규일 경우
             var lct = LocalDate.now()
-
             time_picker.hour = 9
             time_picker.minute = 0
-
-
         }
 
 
@@ -102,7 +102,7 @@ class PlanModifyActivity : AppCompatActivity() {
             intent_to_main.putExtra("date_y", date_picker.year)
             intent_to_main.putExtra("date_m", date_picker.month+1)
             intent_to_main.putExtra("date_d", date_picker.dayOfMonth)
-            intent_to_main.putExtra("dest", destination)
+            intent_to_main.putExtra("dest", tv_destination.text.toString())
             intent_to_main.putExtra("docId", docid)
             setResult(Activity.RESULT_OK,intent_to_main)
             finish()
