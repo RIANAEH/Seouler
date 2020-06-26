@@ -41,18 +41,8 @@ class ChattingHomeActivity : AppCompatActivity() {
             // 기존 CoroutineScope 는 유지하되, 작업만 백그라운드로 처리
         }
 
-        var userRef = FirebaseDatabase.getInstance().getReference("user")
-        var userValueEventListener = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-            }
 
-            override fun onDataChange(p0: DataSnapshot) {
-                loadChattingRoom(intent.extras!!["userId"] as Long)
-            }
-
-        }
-        userRef.addValueEventListener(userValueEventListener)
+        loadChattingRoom(intent.extras!!["userId"] as Long)
 
         adapter = ChattingHomeAdapter()
         adapter.userId = intent.extras!!["userId"] as Long
@@ -138,7 +128,7 @@ class ChattingHomeActivity : AppCompatActivity() {
             }
 
         }
-        partRef.addValueEventListener(valueEventListener)
+        partRef.addListenerForSingleValueEvent(valueEventListener)
 
         var roomRef = FirebaseDatabase.getInstance().getReference("chattingRoom").orderByChild("timestamp")
         val roomValueEventListener = object : ValueEventListener {
@@ -174,7 +164,7 @@ class ChattingHomeActivity : AppCompatActivity() {
             }
 
         }
-        roomRef.addValueEventListener(roomValueEventListener)
+        roomRef.addListenerForSingleValueEvent(roomValueEventListener)
 
 
     }

@@ -126,6 +126,7 @@ class SearchRoomActivity : AppCompatActivity() {
         adapter.listData = resultList
         adapter.userId = intent.extras!!["userId"] as Long
         adapter.searchRoomContext = this
+        searchroomResultCountTextView.text = "${resultList.count()} results"
         searchroomResultRecyclerView.adapter = adapter
         searchroomResultRecyclerView.layoutManager = LinearLayoutManager(this)
     }

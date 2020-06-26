@@ -75,6 +75,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        mainItineraryButton.setOnClickListener {
+            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            startActivity(iti_intent)
+        }
+
         /* 안드로이드 단말 번호를 UserId로 사용 */
         /* DB에서 저장된 정보가 있는지 확인 후 없으면 uid를 새로 생성*/
 
