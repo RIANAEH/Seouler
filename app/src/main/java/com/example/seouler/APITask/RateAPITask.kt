@@ -1,5 +1,6 @@
 package com.example.seouler
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
@@ -8,6 +9,8 @@ import com.android.volley.VolleyLog
 import com.android.volley.VolleyLog.TAG
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.seouler.dataClass.a_exchange
+import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -45,7 +48,7 @@ object VolleyService_rate{
 
         }
     }
-    fun testVolley(context: Context, success: (Boolean) -> Unit) {
+    fun testVolley(act: Activity, success: (Boolean) -> Unit) {
 
         val myJson = JSONObject()
         /* myJson에 아무 데이터도 put 하지 않았기 때문에 requestBody는 "{}" 이다 */
@@ -53,12 +56,23 @@ object VolleyService_rate{
         check11()
         println("<환율> url : $testUrl")
 
-        HttpsTrustManager.allowAllSSL()
+        Recycle_MainActivity.HttpsTrustManager.allowAllSSL()
 
         val testRequest = object : StringRequest(Method.GET, testUrl , Response.Listener { response ->
             println("<환율> 서버 Response 수신: $response")
             /*내가만든..... 것....*/
             response_json = JSONArray(response)
+
+
+            println("환율쓰....JSON: $response_json")
+            for (i in 0 until response_json.length()){
+                var response_json_obj : JSONObject = response_json.get(i) as JSONObject
+                exclist.add(jsonToExc(response_json_obj.get("cur_unit") as String, response_json_obj.get("kftc_deal_bas_r") as String))
+            }
+
+
+
+
             success(true)
 
         }, Response.ErrorListener { error ->
@@ -78,8 +92,15 @@ object VolleyService_rate{
              * getBody에서는 요청에 JSON이나 String이 아닌 ByteArray가 필요하므로, 타입을 변경한다. */
         }
 
-        Volley.newRequestQueue(context).add(testRequest)
+        Volley.newRequestQueue(act).add(testRequest)
     }
+
+
+    fun jsonToExc(cur_unit: String, kftc: String) : a_exchange {
+        val exc = a_exchange(cur_unit, kftc)
+        return exc
+    }
+
 
 }
 

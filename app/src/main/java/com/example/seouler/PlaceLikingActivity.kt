@@ -12,7 +12,7 @@ class PlaceLikingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_like_place)
-
+      
         // contentId로 api호출 -> 세부정보 받아오기
         val dt = GetDetailTask(intent.extras!!["contentId"].toString())
         dt.execute().get()

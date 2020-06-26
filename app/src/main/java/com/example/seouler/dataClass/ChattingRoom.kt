@@ -9,6 +9,7 @@ data class ChattingRoom(
     var owner: Long,
     var locationX: Double,
     var locationY: Double,
+    var locationName : String,
     var locationCertified: Boolean,
     var timestamp: Long,
     var uid: Long) : Serializable {
