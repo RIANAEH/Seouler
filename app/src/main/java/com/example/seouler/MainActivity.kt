@@ -15,9 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.seouler.Chatting.ChattingHomeActivity
-import com.example.seouler.dataClass.ChattingRoom
-import com.example.seouler.dataClass.Message
-import com.example.seouler.dataClass.Participation
 import com.google.android.gms.location.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -27,8 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import com.example.seouler.dataClass.User
+import com.example.seouler.dataClass.*
 import com.google.android.gms.location.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.example.seouler.dataClass.Location as LocationData
 
 
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
     var set_rate_index : Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -111,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         //loadMyChattingRoom(USERID)
         //Thread.sleep(2000)
 
+
         mainChattingButton.setOnClickListener {
             val chattingRoomIntent = Intent(this, ChattingHomeActivity::class.java)
             chattingRoomIntent.putExtra("userId", USERID)
@@ -122,8 +121,7 @@ class MainActivity : AppCompatActivity() {
         mainItineraryButton.setOnClickListener {
             val iti_intent = Intent(this, Recycle_MainActivity::class.java)
             iti_intent.putExtra("SetRateIndex", set_rate_index)
-            //cc.execute()
-            //startActivity(iti_intent)
+            iti_intent.putExtra("userId", USERID)
             startActivityForResult(iti_intent,2)
 
 
