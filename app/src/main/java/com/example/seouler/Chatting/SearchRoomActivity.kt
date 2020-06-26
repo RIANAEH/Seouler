@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.MultiAutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,7 @@ class SearchRoomActivity : AppCompatActivity() {
                     myLocation.locationX,
                     1
                 )
+                Log.d("usbin", "${rResultList[0].getAddressLine(0)[2].toString()}")
 
             } catch(e: IOException){
                 e.printStackTrace()
@@ -61,9 +63,13 @@ class SearchRoomActivity : AppCompatActivity() {
                 builder.setPositiveButton("OK", searchroomDialogListner)
                 builder.show()
             }
-            if(rResultList != null && rResultList.count() > 0) {
-                Log.d("usbin", "${rResultList[0].subLocality}")
-                createroomLocationSpinner.setSelection(locationStringArray.indexOf("${rResultList[0].subLocality}"))
+            if(rResultList != null && rResultList.size > 0) {
+                var token = StringTokenizer(rResultList[0].getAddressLine(0), ",")
+                token.nextToken()
+                var subLocality = token.nextToken()
+                subLocality = subLocality.trim()
+                Log.d("usbin", "${subLocality}")
+                searchroomLocationSpinner.setSelection(locationStringArray.indexOf(subLocality))
             }
             else{
             }
@@ -105,14 +111,15 @@ class SearchRoomActivity : AppCompatActivity() {
                                 )
                             }
                         }
-                        if(!searchroomTitleTextview.text.isBlank() && !resultList.isEmpty()){
+                        if(!searchroomTitleTextview.text.isBlank() && resultList.count() > 0){
                             //위치+제목으로 검색할 경우 제목으로 한 번 더 필터링
-                            for(i in resultList.count()-1 .. 0)
+                            for(i in resultList.count()-1 downTo 0)
                                 if(searchroomTitleTextview.text.toString() != resultList[i].title){
                                     resultList.removeAt(i)
                                 }
                         }
                         adapter.notifyDataSetChanged()
+                        searchroomResultCountTextView.text = "${resultList.count()} results"
                     }
                 }
 
@@ -126,7 +133,6 @@ class SearchRoomActivity : AppCompatActivity() {
         adapter.listData = resultList
         adapter.userId = intent.extras!!["userId"] as Long
         adapter.searchRoomContext = this
-        searchroomResultCountTextView.text = "${resultList.count()} results"
         searchroomResultRecyclerView.adapter = adapter
         searchroomResultRecyclerView.layoutManager = LinearLayoutManager(this)
     }
