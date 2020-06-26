@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import com.example.seouler.Recommend.Recommend_MainActivity
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.example.seouler.dataClass.*
@@ -68,6 +69,11 @@ class MainActivity : AppCompatActivity() {
             override fun onProviderEnabled(provider: String?) {}
             override fun onProviderDisabled(provider: String?) {}
 
+        }
+
+        mainItineraryButton.setOnClickListener {
+            val iti_intent = Intent(this, Recycle_MainActivity::class.java)
+            startActivity(iti_intent)
         }
 
         /* 안드로이드 단말 번호를 UserId로 사용 */
@@ -128,7 +134,12 @@ class MainActivity : AppCompatActivity() {
             iti_intent.putExtra("lat", myLocation.locationY)
             startActivityForResult(iti_intent,2)
 
+        }
 
+        // 추천 페이지 버튼
+        btn_recommend.setOnClickListener {
+            val recommend_intent = Intent(this, Recommend_MainActivity::class.java)
+            startActivity(recommend_intent)
         }
 
         mainSearchButton.setOnClickListener {
