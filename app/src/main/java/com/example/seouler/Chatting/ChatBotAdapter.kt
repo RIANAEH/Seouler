@@ -47,9 +47,9 @@ object ChatBotAdapter {
         val queryInput = QueryInput.newBuilder().setText(textInput).build()
 
         //Save received payload into a protobuf Struct
-        val somePayload = Value.newBuilder().setNumberValue(somePayload.toDouble()).build()
+        val payLoad = Value.newBuilder().setNumberValue(somePayload.toDouble()).build()
         val struct = Struct.newBuilder()
-        struct.putFields("somePayload", somePayload)
+        struct.putFields("somePayload", payLoad)
 
         //Set queryParameters
         val queryParameters = QueryParameters.newBuilder().setPayload(struct).build()
