@@ -27,12 +27,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="#001684CD"
+                    android:background="#00000000"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="350dp"
+                        android:layout_width="370dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Tourist Attraction"
                         android:textStyle="bold"
                         android:textSize="25dp"
@@ -41,11 +42,10 @@
                         android:paddingTop="5dp"/>
                     <ImageButton
                         android:id="@+id/btn_plus_attraction"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:background="#001684CD"
-                        android:paddingTop="5dp"
-                        android:src="@android:drawable/ic_input_add" />
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/plus2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -87,6 +87,10 @@
                     </LinearLayout>
 
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#56000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -100,8 +104,9 @@
                     android:background="#00000000"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="350dp"
+                        android:layout_width="370dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Cultural Facilities"
                         android:textStyle="bold"
                         android:textSize="25dp"
@@ -110,13 +115,12 @@
                         android:textColor="#000000"/>
                     <ImageButton
                         android:id="@+id/btn_plus_cultural"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:background="#001684CD"
-                        android:paddingTop="5dp"
-                        android:src="@android:drawable/ic_input_add" />
-
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/plus2" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -154,8 +158,11 @@
                             tools:listitem="@layout/list_content">
                         </androidx.recyclerview.widget.RecyclerView>
                     </LinearLayout>
-
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#56000000" />
             </LinearLayout>
 
 
@@ -167,25 +174,25 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="#1684CD"
+                    android:background="#00000000"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="350dp"
+                        android:layout_width="370dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Accommodation"
                         android:textStyle="bold"
                         android:textSize="25dp"
-                        android:textColor="#ffffff"
+                        android:textColor="#000000"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp">
                     </TextView>
                     <ImageButton
                         android:id="@+id/btn_plus_accommodation"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:background="#1684CD"
-                        android:paddingTop="5dp"
-                        android:src="@android:drawable/ic_input_add" />
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/plus2"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -226,6 +233,10 @@
                     </LinearLayout>
 
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#56000000" />
             </LinearLayout>
 
 
@@ -237,26 +248,25 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="#1684CD"
+                    android:background="#00000000"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="350dp"
+                        android:layout_width="370dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Shopping"
                         android:textStyle="bold"
                         android:textSize="25dp"
-                        android:textColor="#ffffff"
+                        android:textColor="#000000"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"/>
                     <ImageButton
                         android:id="@+id/btn_plus_shopping"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:background="#1684CD"
-                        android:paddingTop="5dp"
-                        android:src="@android:drawable/ic_input_add" />
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/plus2"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -296,7 +306,12 @@
                     </LinearLayout>
 
                 </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#56000000" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -305,24 +320,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="#1684CD"
+                    android:background="#00000000"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="350dp"
+                        android:layout_width="370dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Cuisine"
                         android:textStyle="bold"
                         android:textSize="25dp"
-                        android:textColor="#ffffff"
+                        android:textColor="#000000"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"/>
                     <ImageButton
                         android:id="@+id/btn_plus_cuisine"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:background="#1684CD"
-                        android:paddingTop="5dp"
-                        android:src="@android:drawable/ic_input_add" />
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/plus2" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
