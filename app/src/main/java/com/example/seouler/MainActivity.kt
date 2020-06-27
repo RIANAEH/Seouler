@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
         mainItineraryButton.setOnClickListener {
             if (myLocation.locationX == -200.0 && myLocation.locationY == -200.0) {
-                Toast.makeText(this, "Try again",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Try again. Can't get GPS",Toast.LENGTH_SHORT).show()
                 //do nothing
             } else {
                 val iti_intent = Intent(this, Recycle_MainActivity::class.java)

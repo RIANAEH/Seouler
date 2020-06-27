@@ -12,7 +12,6 @@ import java.util.*
 
 
 class Weather_MainActivity : FragmentActivity() {
-    var url: String = "http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

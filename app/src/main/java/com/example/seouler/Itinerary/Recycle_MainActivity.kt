@@ -84,8 +84,10 @@ class Recycle_MainActivity : AppCompatActivity() {
         var WeatherDetailPreIntent = Intent(applicationContext, Weather_MainActivity::class.java)
         //날씨 클릭리스너 설정
         simple_weather.setOnClickListener {
-            sleep(1000)
-            startActivity(WeatherDetailPreIntent)
+            if( temperature_now.text != "--")
+            {
+                startActivity(WeatherDetailPreIntent)
+            }
         }
 
         //API 활성화// 날씨, 환율
@@ -178,6 +180,7 @@ class Recycle_MainActivity : AppCompatActivity() {
         recycler_view.adapter = mAdapter
 
         mAdapter.notifyDataSetChanged()
+
 
 
     }
@@ -289,7 +292,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                 var strDate = date_to_string(date_y, date_m, date_d, "-")
 
                 val samplePlan = hashMapOf(
-                    "time" to time,
+                    "time" to time, /////////////////////
                     "destName" to dest ,
                     "geoLatlon" to GeoPoint(34.0, 66.0)
                 )
@@ -396,6 +399,7 @@ class Recycle_MainActivity : AppCompatActivity() {
 
 
                     Log.d("<Weather>","통신 성공!")
+                    Log.d("<Weather>", "${VolleyService_weather.response_json.toString()}")
 
                     var jWeatherCurrent = VolleyService_weather.response_json.get("current") as JSONObject
                     var jWeatherDailyArray = VolleyService_weather.response_json.get("daily") as JSONArray
