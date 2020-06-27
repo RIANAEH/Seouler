@@ -46,6 +46,7 @@
             tools:ignore="DuplicateActivity" />
         <activity android:name=".Search.PlaceDetailIconActivity"/>
         <activity android:name=".Chatting.ChattingInfoActivity"/>
+        <activity android:name=".Chatting.ChatBotActivity"/>
         <service
             android:name=".Chatting.FetchAddressIntentService"
             android:exported="false" />
