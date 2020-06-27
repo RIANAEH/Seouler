@@ -1,5 +1,6 @@
 package com.example.seouler.Search
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -7,12 +8,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.seouler.PlaceLikingActivity
 import com.example.seouler.R
 import com.example.seouler.dataClass.Location
 import com.example.seouler.dataClass.Place
@@ -98,7 +101,9 @@ class PlaceDetailActivity : AppCompatActivity() {
             ) {
                 if (position != RecyclerView.NO_POSITION) { // 리스너 객체의 메서드 호출.
 ////////////////////상세정보로 넘어가기/////////////////////////////////////////////////////
-
+                    val detail_intent = Intent(mAdapter.context, PlaceLikingActivity::class.java)
+                    detail_intent.putExtra("contentId", placelist[position].contentid)
+                    ContextCompat.startActivity(mAdapter.context, detail_intent, null)
                 }
             }
 

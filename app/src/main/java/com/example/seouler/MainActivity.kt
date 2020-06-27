@@ -25,6 +25,7 @@ import android.provider.Settings
 import android.telephony.TelephonyManager
 import com.example.seouler.Recommend.*
 import com.example.seouler.Search.PlaceDetailIconActivity
+import com.example.seouler.Search.SearchMainActivity
 import com.example.seouler.dataClass.*
 import com.example.seouler.dataClass.Location as LocationData
 
@@ -143,16 +144,9 @@ class MainActivity : AppCompatActivity() {
 
 
         mainSearchButton.setOnClickListener {
-            if (myLocation.locationX == -200.0 && myLocation.locationY == -200.0) {
-                Toast.makeText(this, "Try again. Can't get GPS",Toast.LENGTH_SHORT).show()
-                //do nothing
-            }
-            else {
-                val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
-                testDetailIntent.putExtra("myLocation", myLocation)
-                startActivity(testDetailIntent)
+            val testDetailIntent = Intent(this, SearchMainActivity::class.java)
+            startActivity(testDetailIntent)
 
-            }
         }
     }
 
