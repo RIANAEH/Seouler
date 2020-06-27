@@ -2,6 +2,7 @@ package com.example.seouler.Chatting
 
 import android.content.Intent
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
@@ -40,7 +41,10 @@ class ChattingHomeActivity : AppCompatActivity() {
         scope.launch(Dispatchers.Default) {
             // 기존 CoroutineScope 는 유지하되, 작업만 백그라운드로 처리
         }
+
+
         loadChattingRoom(intent.extras!!["userId"] as Long)
+
         adapter = ChattingHomeAdapter()
         adapter.userId = intent.extras!!["userId"] as Long
         adapter.listData = chattingRoomList
@@ -91,6 +95,9 @@ class ChattingHomeActivity : AppCompatActivity() {
     fun loadChattingRoom(userId : Long){
         var partData : ArrayList<Participation> = ArrayList()
         var myRoomIDList : ArrayList<Long> = ArrayList()
+
+
+
         val partRef = FirebaseDatabase.getInstance().getReference("participation")
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -122,7 +129,7 @@ class ChattingHomeActivity : AppCompatActivity() {
             }
 
         }
-        partRef.addValueEventListener(valueEventListener)
+        partRef.addListenerForSingleValueEvent(valueEventListener)
 
         var roomRef = FirebaseDatabase.getInstance().getReference("chattingRoom").orderByChild("timestamp")
         val roomValueEventListener = object : ValueEventListener {
@@ -134,7 +141,7 @@ class ChattingHomeActivity : AppCompatActivity() {
                 for (partSnapshot in dataSnapshot.children) {
                     for(i in 0 until myRoomIDList.count()){
                         if(myRoomIDList[i] == partSnapshot.child("roomId").value as Long){
-                            Log.d("ChattingHomeActiviry", "F Yes")
+                            Log.d("ChattingHomeActivity", "F Yes")
                             chattingRoomList.add(
                                 ChattingRoom(
                                     partSnapshot.child("roomId").value as Long,
@@ -158,6 +165,8 @@ class ChattingHomeActivity : AppCompatActivity() {
             }
 
         }
-        roomRef.addValueEventListener(roomValueEventListener)
+        roomRef.addListenerForSingleValueEvent(roomValueEventListener)
+
+
     }
 }

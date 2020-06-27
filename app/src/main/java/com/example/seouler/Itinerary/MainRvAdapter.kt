@@ -50,9 +50,6 @@ class MainRvAdapter(val context: Context, val planlist : ArrayList<a_plan>) :
                     if (pos != RecyclerView.NO_POSITION) { // 리스너 객체의 메서드 호출.
                         if (mListener != null) {
                             mListener!!.onItemClick(it, pos)
-                            //Toast.makeText(context,"asdf"+pos, Toast.LENGTH_SHORT).show()
-                            //var intent = Intent(context, PlanModifyActivity::class.java)
-                            //intent.putExtra("position",pos)
                         }
                     }
                 })
@@ -64,7 +61,18 @@ class MainRvAdapter(val context: Context, val planlist : ArrayList<a_plan>) :
 
         fun bind (aplan: a_plan, context: Context) {
             /* 나머지 TextView와 String 데이터를 연결한다. */
-            time?.text = aplan.time
+            println("<BIND> MainRVAdapter_ ${aplan.toString()}")
+
+            var checkAA =""
+            var convert_hour = aplan.time.hour
+            if (convert_hour > 12){
+                convert_hour = convert_hour - 12
+                checkAA = "PM"
+            }
+            else {
+                checkAA = "AM"
+            }
+            time?.text = convert_hour.toString() + ":" + "%02d".format(aplan.time.minute) + " " + checkAA
             dest?.text = aplan.destination
         }
     }
