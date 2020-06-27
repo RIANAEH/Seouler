@@ -20,16 +20,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import com.example.seouler.Recommend.Recommend_MainActivity
 import android.provider.Settings
-import android.telephony.TelephonyManager
+import com.example.seouler.Search.PlaceDetailIconActivity
 import com.example.seouler.dataClass.*
-import com.google.android.gms.location.*
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import java.lang.Thread.sleep
 import com.example.seouler.dataClass.Location as LocationData
 
 
@@ -145,14 +140,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(recommend_intent)
         }
 
-        mainSearchButton.setOnClickListener {
-            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
-            startActivity(testDetailIntent)
-        }
 
         mainSearchButton.setOnClickListener {
-            val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
-            startActivity(testDetailIntent)
+            if (myLocation.locationX == -200.0 && myLocation.locationY == -200.0) {
+                Toast.makeText(this, "Try again. Can't get GPS",Toast.LENGTH_SHORT).show()
+                //do nothing
+            }
+            else {
+                val testDetailIntent = Intent(this, PlaceDetailIconActivity::class.java)
+                testDetailIntent.putExtra("myLocation", myLocation)
+                startActivity(testDetailIntent)
+
+            }
         }
     }
 
