@@ -1,15 +1,21 @@
 package com.example.seouler.Chatting
 
+import android.content.Intent
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seouler.R
+import com.example.seouler.dataClass.Location
 import com.example.seouler.dataClass.Message
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_chattinghome.*
 import kotlinx.android.synthetic.main.activity_chattingmessage.*
 
 class ChattingMessageActivity : AppCompatActivity(){
@@ -76,6 +82,70 @@ class ChattingMessageActivity : AppCompatActivity(){
 
             }
             roomRef.addListenerForSingleValueEvent(updateRoomTimestampListner)
+        }
+
+        var readRoomNameRef= FirebaseDatabase.getInstance().getReference("chattingRoom")
+        var readRoomNameValueEventListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                for (data in p0.children){
+                    if(roomId == data.child("roomId").value as Long){
+                        chattingMessageHeaderToolbar.title = data.child("title").value.toString()
+                        break
+                    }
+                }
+            }
+
+        }
+        readRoomNameRef.addListenerForSingleValueEvent((readRoomNameValueEventListener))
+
+        chattingMessageMenuButton.setOnClickListener {
+            var menuPopup = PopupMenu(this, chattingMessageMenuButton)
+            menuPopup.menuInflater.inflate(R.menu.menu_chatting_message, menuPopup.menu)
+
+            menuPopup.setOnMenuItemClickListener {
+                val item = it.itemId
+
+                when(item){
+                    //채팅방 정보 클릭하면 정보 띄워줌
+                    R.id.menuItemRoomInfo -> {
+                        val nextIntent = Intent(this, ChattingInfoActivity::class.java)
+                        nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
+                        nextIntent.putExtra("roomId", intent.extras!!["roomId"] as Long)
+                        ContextCompat.startActivity(this, nextIntent, null)
+                    }
+                    //채팅방 나가기 누르면 DB participation 목록에서 지워주면서 뒤로가기
+                    R.id.menuItemExitRoom -> {
+                        var exitRoomRef = FirebaseDatabase.getInstance().getReference("participation")
+                        var exitRoomValueEventListener = object : ValueEventListener{
+                            override fun onCancelled(p0: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onDataChange(p0: DataSnapshot) {
+                                for (data in p0.children){
+                                    if(data.child("roomId").value as Long == roomId
+                                        && data.child("userId").value as Long == intent.extras!!["userId"] as Long){
+                                        data.ref.removeValue()
+                                        onBackPressed()
+                                    }
+                                }
+                            }
+
+                        }
+                        exitRoomRef.addListenerForSingleValueEvent(exitRoomValueEventListener)
+                    }
+                }
+                true
+
+
+            }
+            menuPopup.show()
+
+
         }
     }
 

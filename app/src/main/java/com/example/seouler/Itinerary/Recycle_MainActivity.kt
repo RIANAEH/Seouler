@@ -9,37 +9,36 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.DatePicker
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.seouler.dataClass.WeatherDaily
 import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
-import com.github.mikephil.charting.utils.Utils.init
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import com.google.firebase.firestore.model.value.NullValue
+import com.google.firebase.firestore.model.value.TimestampValue
 import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Thread.sleep
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 import javax.net.ssl.*
-import kotlin.reflect.typeOf
 
 
 var exclist = arrayListOf<a_exchange>()
 
-//Itinerary main//
-
-
 class Recycle_MainActivity : AppCompatActivity() {
-
+    var lat = 0.0
+    var lon = 0.0
     var planlist = arrayListOf<a_plan>()
     var set_rate_index = 0
     val lm = LinearLayoutManager(this)
@@ -49,7 +48,6 @@ class Recycle_MainActivity : AppCompatActivity() {
     var year = lcDate.year// calendar.get(Calendar.YEAR)
     var month = lcDate.monthValue//calendar.get(Calendar.MONTH)
     var day = lcDate.dayOfMonth //calendar.get(Calendar.DAY_OF_MONTH)
-    var tformat = SimpleDateFormat("h:mm a")
     var uid = ""
     var firestore = FirebaseFirestore.getInstance()
     var cUsersRef = firestore.collection("Users")
@@ -76,15 +74,24 @@ class Recycle_MainActivity : AppCompatActivity() {
 
         set_rate_index = intent.getIntExtra("SetRateIndex", 0)
         uid = intent.getLongExtra("userId", 0).toString()  ///UID 설정!
-        println("<uid> $uid")
+        lat = intent.getDoubleExtra("lat", 0.0)
+        lon = intent.getDoubleExtra("lon", 0.0)
         var tmp = hashMapOf(
             "uid" to uid
         )
         dUserPlanRef = cUsersRef.document(uid)
         dUserPlanRef.set(tmp)
+        var WeatherDetailPreIntent = Intent(applicationContext, Weather_MainActivity::class.java)
+        //날씨 클릭리스너 설정
+        simple_weather.setOnClickListener {
+            if( temperature_now.text != "--")
+            {
+                startActivity(WeatherDetailPreIntent)
+            }
+        }
 
         //API 활성화// 날씨, 환율
-        var weather_async = Weather_Async(this) // API
+        var weather_async = Weather_Async(this, WeatherDetailPreIntent, lat, lon) // API
         var rate_async = Rate_Async(this, set_rate_index)
         weather_async.execute()
         rate_async.execute()
@@ -100,11 +107,7 @@ class Recycle_MainActivity : AppCompatActivity() {
 
         }
 
-        //날씨 클릭리스너 설정
-        simple_weather.setOnClickListener {
-            val go_to_weather_intent = Intent(applicationContext, Weather_MainActivity::class.java)
-            startActivity(go_to_weather_intent)
-        }
+
 
         //환율 클릭 리스너 설정
         simple_exc.setOnClickListener {
@@ -153,9 +156,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                 v: View?,
                 position: Int
             ) {
-                //Toast.makeText(applicationContext,"asdfasdf",Toast.LENGTH_SHORT).show()
                 if (position != RecyclerView.NO_POSITION) { // 리스너 객체의 메서드 호출.
-                    //Toast.makeText(applicationContext,"position : "+position, Toast.LENGTH_SHORT).show()
                     var go_to_modify_intent =
                         Intent(applicationContext, PlanModifyActivity::class.java)
                     go_to_modify_intent.putExtra("position", position) //일정 순번
@@ -181,21 +182,19 @@ class Recycle_MainActivity : AppCompatActivity() {
         mAdapter.notifyDataSetChanged()
 
 
+
     }
 
     //파이어스토에서 값 가져와서 planlist에 얹히기
      fun UpdatePlanListFromFirestore(mAdapter :MainRvAdapter) {
         planlist.removeAll(planlist)
-        dUserPlanRef.collection(date_to_string(year, month, day, "-"))////////
-            .get() ////////
+        dUserPlanRef.collection(date_to_string(year, month, day, "-"))
+            .get()
             .addOnSuccessListener { documents ->
                     // println("<firestore> getDoc ${document.id} => ${document.data}")
                     //dUserPlanRef = document.reference                                       // DOC REF INIT 만약 doc 존재하지 않을때가 문제...
 
                     println("<firestore> $year, $month, $day")
-                    //dUserPlanRef.collection(date_to_string(year, month, day, "-"))
-                    //   .get()
-                    //  .addOnSuccessListener { result ->
                     for (document in documents) {
                         println("<firestore> Success : ${document.id} => ${document.data}")
 
@@ -208,14 +207,15 @@ class Recycle_MainActivity : AppCompatActivity() {
                         var tmp_dest = document.data.get("destName") as String
 
                         planlist.add(a_plan(tmp_time, tmp_dest, document.id, tmp_geo))
-
-                        //mAdapter.notifyDataSetChanged()
-
                     }
 
 
 
                 mAdapter.notifyDataSetChanged()
+
+            }
+            .addOnFailureListener{ e ->
+                Log.d("<F>", "$e")
 
             }
         println("<BIND> In RecycleMain_ $planlist")
@@ -292,7 +292,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                 var strDate = date_to_string(date_y, date_m, date_d, "-")
 
                 val samplePlan = hashMapOf(
-                    "time" to time,
+                    "time" to time, /////////////////////
                     "destName" to dest ,
                     "geoLatlon" to GeoPoint(34.0, 66.0)
                 )
@@ -366,17 +366,15 @@ class Recycle_MainActivity : AppCompatActivity() {
 
             VolleyService_rate.testVolley(act) { testSuccess ->
                 if (testSuccess) {
-                    Toast.makeText(act, "환율 통신 성공!", Toast.LENGTH_SHORT).show()
-
                     var response_json = VolleyService_rate.response_json
 
-                    println("환율쓰2....JSON: $response_json")
+                    Log.d("<Rate>","환율쓰2....JSON: $response_json")
 
                     act.tv_exc_rateUnit.text = exclist[set_rate_index].rateUnit
                     act.tv_exchangeRate.text = exclist[set_rate_index].exchangeRate
 
                 } else {
-                    Toast.makeText(act, "환율 실패...", Toast.LENGTH_SHORT).show()
+                    Log.d("<Rate>","환율 실패...")
                 }
 
             }
@@ -387,31 +385,58 @@ class Recycle_MainActivity : AppCompatActivity() {
 
     }
 
-    class Weather_Async(mainActivity: Activity) : AsyncTask<Int?, Int, List<String>>() {
+    class Weather_Async(mainActivity: Activity, preIntent: Intent, lat : Double, lon : Double) : AsyncTask<Int?, Int, List<String>>() {
 
-         var con = mainActivity
-
+        var con = mainActivity
+        var preIntent = preIntent
+        var lat = lat
+        var lon = lon
         override fun doInBackground(vararg params: Int?): List<String>? {
+            VolleyService_weather.setlatlon(lat, lon)
+
             VolleyService_weather.testVolley(con) { testSuccess ->
                 if (testSuccess) {
 
 
-                    Toast.makeText(con, "통신 성공!", Toast.LENGTH_LONG).show()
-                    //Toast.makeText(con, VolleyService_weather.weather_current.get("temp").toString(),Toast.LENGTH_SHORT).show()
+                    Log.d("<Weather>","통신 성공!")
+                    Log.d("<Weather>", "${VolleyService_weather.response_json.toString()}")
 
-                    var tmp = VolleyService_weather.response_json.get("current") as JSONObject
-                    println("AAAAAAA $tmp")
+                    var jWeatherCurrent = VolleyService_weather.response_json.get("current") as JSONObject
+                    var jWeatherDailyArray = VolleyService_weather.response_json.get("daily") as JSONArray
+                    var wDailyList = listOf(WeatherDaily(), WeatherDaily(), WeatherDaily(), WeatherDaily(), WeatherDaily())
 
-                    con.temperature_now.text = tmp.get("temp").toString() + "℃"
-                    var tmp2 = tmp.get("weather") as JSONArray
-                    var tmp3 = tmp2.getJSONObject(0)
-                    var icon_num = tmp3.get("icon") as String
+                    for (i in 0..4){
+                        var jTmp = jWeatherDailyArray.getJSONObject(i+1) // 내일 날씨 정보
+                        var jtTmp = jTmp.get("temp") as JSONObject
+                        var jwTmp = jTmp.get("weather") as JSONArray
 
+                        wDailyList[i].tMin = jtTmp.getDouble("min")
+                        wDailyList[i].tMax = jtTmp.getDouble("max")
+                        wDailyList[i].stricon = jwTmp.getJSONObject(0).getString("icon")
+                        preIntent.putExtra(i.toString()+"day", LocalDate.now().plusDays((i+1).toLong()).dayOfWeek.toString())
+                        preIntent.putExtra(i.toString()+"order", i)
+                        preIntent.putExtra(i.toString()+"min", wDailyList[i].tMin)
+                        preIntent.putExtra(i.toString()+"max", wDailyList[i].tMax)
+                        preIntent.putExtra(i.toString()+"icon", wDailyList[i].stricon)
 
-                    con.icon_weather.setImageResource(getWeatherIcon_file(icon_num))
-                    con.icon_weather.setImageResource(R.drawable.w01d)
+                   }
+
+                    var strWeatherNowTemp = jWeatherCurrent.get("temp").toString() + "℃"
+                    var jWeatherNowWeatherArray = jWeatherCurrent.get("weather") as JSONArray
+                    var jWeatherNowWeather = jWeatherNowWeatherArray.getJSONObject(0)
+                    var strWeatherNowIconNum = jWeatherNowWeather.get("icon") as String
+
+                    preIntent.putExtra("nowDesc", jWeatherNowWeather.getString("description"))
+                    preIntent.putExtra("nowTemp", strWeatherNowTemp)
+                    preIntent.putExtra("nowIcon", strWeatherNowIconNum)
+                    preIntent.putExtra("nowSunrise", Date(jWeatherCurrent.getInt("sunrise").toLong()).time)
+                    preIntent.putExtra("nowSunset",Date(jWeatherCurrent.getInt("sunset").toLong()).time )
+                    preIntent.putExtra("nowHumidity", jWeatherCurrent.get("humidity") as Int)
+
+                    con.temperature_now.text = strWeatherNowTemp
+                    con.icon_weather.setImageResource(getWeatherIcon_file(strWeatherNowIconNum))
                 } else {
-                    Toast.makeText(con, "통신 실패...!", Toast.LENGTH_LONG).show()
+                    println("통신 실패...!")
                 }
 
             }

@@ -18,6 +18,7 @@ import com.example.seouler.dataClass.StaticSeoulLocationData
 import com.google.firebase.database.FirebaseDatabase
 import com.example.seouler.dataClass.Location as LocationData
 import kotlinx.android.synthetic.main.activity_create_room.*
+import kotlinx.android.synthetic.main.activity_search_room.*
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -72,8 +73,11 @@ class CreateRoomAcvitivy : AppCompatActivity() {
                 builder.show()
             }
             if(rResultList != null && rResultList.count() > 0) {
-                Log.d("usbin", "${rResultList[0].subLocality}")
-                createroomLocationSpinner.setSelection(locationStringArray.indexOf("${rResultList[0].subLocality}"))
+                var token = StringTokenizer(rResultList[0].getAddressLine(0), ",")
+                token.nextToken()
+                var subLocality = token.nextToken()
+                subLocality = subLocality.trim()
+                createroomLocationSpinner.setSelection(locationStringArray.indexOf(subLocality))
                 locationCertified = true
                 createroomLocationSpinner.isEnabled = false
             }

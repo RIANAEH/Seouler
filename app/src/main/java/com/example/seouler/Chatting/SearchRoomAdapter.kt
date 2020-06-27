@@ -26,6 +26,7 @@ class SearchRoomAdapter : RecyclerView.Adapter<SearchRoomHolder>(){
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rvitem_chattinghome, parent, false)
         val holder = SearchRoomHolder(view)
         holder.searchRoomContext = searchRoomContext
+        holder.userId = userId
         return holder
     }
 
@@ -36,6 +37,7 @@ class SearchRoomAdapter : RecyclerView.Adapter<SearchRoomHolder>(){
 }
 class SearchRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     lateinit var searchRoomContext : Context
+    var userId : Long = 0
     fun setChattingRoom(room : ChattingRoom, position : Int){
         itemView.chattingroomCellButton.text = "${room.title}"
         var time : Long = ((System.currentTimeMillis()-room.timestamp)/1000)/60
@@ -64,6 +66,7 @@ class SearchRoomHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         itemView.chattingroomCellButton.setOnClickListener {
             var infoIntent = Intent(searchRoomContext, ChattingInfoActivity::class.java)
             infoIntent.putExtra("roomId",room.roomId)
+            infoIntent.putExtra(("userId"), userId)
             startActivity(searchRoomContext, infoIntent, null)
             /*
             채팅방 정보를 먼저 띄워줌.

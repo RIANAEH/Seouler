@@ -1,12 +1,17 @@
 package com.example.seouler.Chatting
 
 import android.content.Context
+import android.renderscript.Sampler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.seouler.R
 import com.example.seouler.dataClass.Message
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.rvitem_chattingmessage.view.*
 import kotlinx.android.synthetic.main.rvitem_chattingmessage_me.view.*
 
@@ -50,8 +55,27 @@ class ChattingMessageAdapter(val context: Context, var listData : ArrayList<Mess
 
 }
 class MessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    var userName = "loading"
     fun setChattingRoom(msg : Message){
-        itemView.chattingMessageNameTextView.text = "${msg.sender}"
+        var userRef = FirebaseDatabase.getInstance().getReference("user")
+        var userValueEventListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                for (data in p0.children){
+                    if(msg.sender == data.child("userId").value as Long){
+                        userName = data.child("name").value.toString()
+                        itemView.chattingMessageNameTextView.text = "${userName}"
+                        break
+                    }
+                }
+            }
+
+        }
+        userRef.addListenerForSingleValueEvent((userValueEventListener))
+
         itemView.chattingMessageTextView.text = "${msg.text}"
         var time : Long = ((System.currentTimeMillis()-msg.timestamp)/1000)/60
         var timeMessage : String = ""

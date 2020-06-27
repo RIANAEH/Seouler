@@ -28,37 +28,37 @@
         app:layout_constraintTop_toBottomOf="@+id/placeName" />
 
     <Button
-        android:id="@+id/buttonRestaurant"
+        android:id="@+id/buttonDining"
         android:layout_width="160dp"
         android:layout_height="157dp"
         android:layout_marginTop="55dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
-        android:text="Restaurants"
+        android:text="Dining"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/placeName" />
 
     <Button
-        android:id="@+id/buttonResort"
+        android:id="@+id/buttonEvents"
         android:layout_width="160dp"
         android:layout_height="157dp"
         android:layout_marginStart="36dp"
         android:layout_marginLeft="36dp"
         android:layout_marginTop="32dp"
-        android:text="Resorts"
+        android:text="Events"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLandmark" />
 
     <Button
-        android:id="@+id/buttonHistory"
+        android:id="@+id/buttonAccommodation"
         android:layout_width="160dp"
         android:layout_height="157dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
-        android:text="History"
+        android:text="Accommodation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRestaurant" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonDining" />
 
     <Button
         android:id="@+id/buttonShopping"
@@ -69,17 +69,17 @@
         android:layout_marginTop="32dp"
         android:text="Shopping"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonResort" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonEvents" />
 
     <Button
-        android:id="@+id/buttonOthers"
+        android:id="@+id/buttonCultural"
         android:layout_width="160dp"
         android:layout_height="157dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
-        android:text="Others"
+        android:text="Cultural"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonHistory" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonAccommodation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

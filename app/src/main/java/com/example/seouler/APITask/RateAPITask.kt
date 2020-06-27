@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -23,21 +24,44 @@ object VolleyService_rate{
     val current = LocalTime.now()
     val formatter = DateTimeFormatter.ISO_LOCAL_TIME
     val formatted = current.format(formatter)
+    var baseday = LocalDateTime.now()
+    var temp = LocalTime.of(11,0) // 기준점 . 주말도 포함해야함..
 
-    var temp = LocalTime.of(11,0)
+    //var k = baseday.toLocalTime().isBefore(temp) // 11시 이전 확인용
+    var l = setBaseday()
 
-    var k = LocalTime.now().isBefore(temp)
+
+
+    fun setBaseday() : Int{
+        if (baseday.toLocalDate().dayOfWeek.toString() == "SATURDAY") {
+            //baseday = baseday.minusDays(1)
+            return -1
+
+        } else if (baseday.toLocalDate().dayOfWeek.toString() == "SUNDAY") {
+            baseday = baseday.minusDays(2)
+            return -2
+        }
+        else if(baseday.toLocalTime().isBefore(LocalTime.of(11,0))) {
+            if (baseday.toLocalDate().dayOfWeek.toString() == "MONDAY")
+                return -3
+            else
+                return -1
+        }
+        else
+            return -0
+
+        }
 
     lateinit var response_json : JSONArray
 
     var testUrl = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=LHuF0WXP9Ie45wK4xO4j3iJZ9mMRsd4X&data=AP01"
     fun check11 (){
-
-        println("<환율> Check11 k :: $k")
+        //println("<환율> Check11 k :: $k")
         println("<환율> $current ")
-        if (k && !testUrl.contains("&searchdate")) {
+        if (!testUrl.contains("&searchdate")){
             var calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -1) //변경하고 싶은 원하는 날짜 수를 넣어 준다.
+            calendar.add(Calendar.DAY_OF_YEAR, l) //변경하고 싶은 원하는 날짜 수를 넣어 준다.
+            //calendar
             var TimeToDate = calendar.time
             var formatter = SimpleDateFormat("yyyyMMdd") //날짜의 모양을 원하는 대로 변경 해 준다.
             //formatter.timeZone = TimeZone.getTimeZone("Asia/Seoul")
@@ -45,7 +69,6 @@ object VolleyService_rate{
 
             println(finalResultDate)
             testUrl+= "&searchdate=" + finalResultDate
-
         }
     }
     fun testVolley(act: Activity, success: (Boolean) -> Unit) {
