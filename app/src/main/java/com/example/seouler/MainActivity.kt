@@ -21,8 +21,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
-import com.example.seouler.Recommend.Recommend_MainActivity
 import android.provider.Settings
+import android.telephony.TelephonyManager
+import com.example.seouler.Recommend.*
 import com.example.seouler.Search.PlaceDetailIconActivity
 import com.example.seouler.dataClass.*
 import com.example.seouler.dataClass.Location as LocationData

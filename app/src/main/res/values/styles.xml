@@ -11,4 +11,7 @@
 
         <item name="colorAccent">@color/dialogColor</item>
     </style>
+    <style name="SplashTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 </resources>

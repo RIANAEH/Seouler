@@ -81,3 +81,5 @@ val map_cuisineCat: Map<String, Cat> =
         "Bars/Cafes" to Cat("A05", "A0502", "A05020900"))
 val category_cuisine = map_cuisineCat.keys.toTypedArray()
 var checkItem_cuisine = booleanArrayOf(true, false, false, false, false, false, false, false)
+
+var isFirstOk = true
