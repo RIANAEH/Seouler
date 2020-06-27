@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PlaceLikingActivity"></activity>
-        <activity android:name=".PlaceDetailActivity" />
+        <activity android:name=".Search.PlaceDetailActivity" />
         <activity android:name=".Recommend.Recommend_MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -32,9 +32,7 @@
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
         <activity android:name=".Weather_MainActivity"/>
-        <activity android:name=".PlaceLikingActivity"/>
-        <activity android:name=".PlaceDetailIconActivity"/>
-        <activity android:name=".PlaceDetailActivity"/>
+        <activity android:name=".Search.PlaceDetailIconActivity"/>
         <activity android:name=".Chatting.ChattingInfoActivity"/>
         <service
             android:name=".Chatting.FetchAddressIntentService"
