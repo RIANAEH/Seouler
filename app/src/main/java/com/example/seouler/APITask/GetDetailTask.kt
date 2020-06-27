@@ -1,11 +1,14 @@
 package com.example.seouler.APITask
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
+import android.text.Html
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.Dimension
 import com.example.seouler.PlaceLikingActivity
 import com.example.seouler.R
 import org.json.JSONObject
@@ -76,16 +79,18 @@ class GetDetailTask(val contentId: String, val view: PlaceLikingActivity) : Asyn
         return null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onPostExecute(result: Any?) {
         super.onPostExecute(result)
 
         // 받아온 정보 보여주기
         view.findViewById<ImageView>(R.id.lp_firstimage).setImageBitmap(firstimage)
         view.findViewById<TextView>(R.id.lp_title).setText(title)
-        view.findViewById<TextView>(R.id.lp_introduction).text = introduction
-        view.findViewById<TextView>(R.id.lp_addr1).text = "Address\n"+addr1
-        view.findViewById<TextView>(R.id.lp_tel).text = "Tel\n"+tel
-        view.findViewById<TextView>(R.id.lp_homepage).text = "Homepage\n"+homepage
-        view.findViewById<TextView>(R.id.lp_directions).text = "Directions\n"+directions
+        view.findViewById<TextView>(R.id.lp_introduction).setText(Html.fromHtml(introduction, Html.FROM_HTML_MODE_LEGACY))
+        view.findViewById<TextView>(R.id.lp_addr1).setText(addr1)
+        if(tel!=null) view.findViewById<TextView>(R.id.lp_tel).setText(tel)
+        else view.findViewById<TextView>(R.id.lp_tel).setText("no data")
+        view.findViewById<TextView>(R.id.lp_homepage).setText(Html.fromHtml(homepage, Html.FROM_HTML_MODE_LEGACY))
+        view.findViewById<TextView>(R.id.lp_directions).setText(Html.fromHtml(directions, Html.FROM_HTML_MODE_LEGACY))
     }
 }
