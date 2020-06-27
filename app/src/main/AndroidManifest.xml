@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.seouler">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -17,12 +18,20 @@
         <activity android:name=".PlaceLikingActivity"></activity>
         <activity android:name=".PlaceDetailActivity" />
         <activity android:name=".Recommend.Recommend_MainActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="fullSensor" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".MainActivity">
+
         </activity>
         <activity android:name=".Chatting.ChattingHomeActivity" />
         <activity android:name=".Chatting.ChattingMessageActivity" />
@@ -32,9 +41,11 @@
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
         <activity android:name=".Weather_MainActivity"/>
-        <activity android:name=".PlaceLikingActivity"/>
+        <activity android:name=".PlaceLikingActivity"
+            tools:ignore="DuplicateActivity" />
         <activity android:name=".PlaceDetailIconActivity"/>
-        <activity android:name=".PlaceDetailActivity"/>
+        <activity android:name=".PlaceDetailActivity"
+            tools:ignore="DuplicateActivity" />
         <activity android:name=".Chatting.ChattingInfoActivity"/>
         <service
             android:name=".Chatting.FetchAddressIntentService"

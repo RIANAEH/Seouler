@@ -22,9 +22,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import com.example.seouler.Recommend.Recommend_MainActivity
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import com.example.seouler.Recommend.*
 import com.example.seouler.dataClass.*
 import com.google.android.gms.location.*
 import com.google.firebase.firestore.CollectionReference

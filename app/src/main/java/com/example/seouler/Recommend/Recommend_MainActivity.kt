@@ -2,8 +2,9 @@ package com.example.seouler.Recommend
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.example.seouler.R
 import kotlinx.android.synthetic.main.activity_recommend__main.*
 
@@ -15,18 +16,28 @@ class Recommend_MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recommend__main)
 
-
-        GetContentTask(list_content_attraction, list_keyword_attraction,
-            "76","A01", "A0101", null, this).execute()
-        GetContentTask(list_content_cultural, list_keyword_cultural,
-            "75","A02", "A0206", "A02060100", this).execute()
-        GetContentTask(list_content_accommodation, list_keyword_accommodation,
-            "80","B02", "B0201", "B02010100", this).execute()
-        GetContentTask(list_content_shopping, list_keyword_shopping,
-            "79","A04", "A0401", "A04010200", this).execute()
-        GetContentTask(list_content_cuisine, list_keyword_cuisine,
-            "82","A05", "A0502", "A05020100", this).execute()
-
+        if(isFirstOk) {
+            // 추천 페이지 아이템 초기화
+            GetContentTask(list_content_attraction, list_keyword_attraction,
+                "76","A01", "A0101", null, this).execute()
+            Log.d("태그", "실행")
+            GetContentTask(list_content_cultural, list_keyword_cultural,
+                "75","A02", "A0206", "A02060100", this).execute()
+            GetContentTask(list_content_accommodation, list_keyword_accommodation,
+                "80","B02", "B0201", "B02010100", this).execute()
+            GetContentTask(list_content_shopping, list_keyword_shopping,
+                "79","A04", "A0401", "A04010200", this).execute()
+            GetContentTask(list_content_cuisine, list_keyword_cuisine,
+                "82","A05", "A0502", "A05020100", this).execute()
+            isFirstOk = false
+        }
+        else {
+            DisplayTask("76", this).execute()
+            DisplayTask("75", this).execute()
+            DisplayTask("80", this).execute()
+            DisplayTask("79", this).execute()
+            DisplayTask("82", this).execute()
+        }
 
         btn_plus_attraction.setOnClickListener {
             showPlusDialog("Attraction")
@@ -47,7 +58,6 @@ class Recommend_MainActivity : AppCompatActivity() {
         btn_plus_cuisine.setOnClickListener {
             showPlusDialog("Cuisine")
         }
-
     }
 
     fun showPlusDialog(contentType: String) {

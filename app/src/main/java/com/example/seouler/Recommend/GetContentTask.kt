@@ -13,10 +13,11 @@ import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
-class GetContentTask(val list_c: ArrayList<ContentItem>, val list_k: ArrayList<KeywordItem>, val contentTypedId: String, val cat1: String, val cat2: String, val cat3: String?, val view: Recommend_MainActivity) : AsyncTask<Any?, Any?, Any?>() {
+class GetContentTask(val list_c: ArrayList<ContentItem>, val list_k: ArrayList<KeywordItem>, val contentTypedId: String?, val cat1: String?, val cat2: String?, val cat3: String?, val view: Recommend_MainActivity?) : AsyncTask<Any?, Any?, Any?>() {
     var firstimage: Bitmap? = null
 
     override fun doInBackground(vararg params: Any?): Any? {
+
         // 현재 기본적으로 10개의 content를 가져오며 numOfRows를 변경하여 개수를 수정할 수 있다.
         var urlString: String
         when(cat3) {
@@ -82,40 +83,39 @@ class GetContentTask(val list_c: ArrayList<ContentItem>, val list_k: ArrayList<K
                 list_content_attraction = list_c
 
                 //새롭게 디스플레이한다.
-                view.findViewById<RecyclerView>(R.id.recyclerView_content_attraction).adapter = ContentAdapter(list_c)
-                view.findViewById<RecyclerView>(R.id.recyclerView_keyword_attraction).adapter = KeywordAdapter(list_k)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_content_attraction)?.adapter = ContentAdapter(list_c)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_keyword_attraction)?.adapter = KeywordAdapter(list_k)
+
             }
             "75" -> {
                 list_keyword_cultural = list_k
                 list_content_cultural = list_c
 
-                //새롭게 디스플레이한다.
-                view.findViewById<RecyclerView>(R.id.recyclerView_content_cultural).adapter = ContentAdapter(list_c)
-                view.findViewById<RecyclerView>(R.id.recyclerView_keyword_cultural).adapter = KeywordAdapter(list_k)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_content_cultural)?.adapter = ContentAdapter(list_c)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_keyword_cultural)?.adapter = KeywordAdapter(list_k)
+
             }
             "80" -> {
                 list_keyword_accommodation = list_k
                 list_content_accommodation = list_c
 
-                //새롭게 디스플레이한다.
-                view.findViewById<RecyclerView>(R.id.recyclerView_content_accommodation).adapter = ContentAdapter(list_c)
-                view.findViewById<RecyclerView>(R.id.recyclerView_keyword_accommodation).adapter = KeywordAdapter(list_k)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_content_accommodation)?.adapter = ContentAdapter(list_c)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_keyword_accommodation)?.adapter = KeywordAdapter(list_k)
             }
             "79" -> {
                 list_keyword_shopping = list_k
                 list_content_shopping = list_c
 
-                //새롭게 디스플레이한다.
-                view.findViewById<RecyclerView>(R.id.recyclerView_content_shopping).adapter = ContentAdapter(list_c)
-                view.findViewById<RecyclerView>(R.id.recyclerView_keyword_shopping).adapter = KeywordAdapter(list_k)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_content_shopping)?.adapter = ContentAdapter(list_c)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_keyword_shopping)?.adapter = KeywordAdapter(list_k)
+
             }
             "82" -> {
                 list_keyword_cuisine = list_k
                 list_content_cuisine  = list_c
 
-                //새롭게 디스플레이한다.
-                view.findViewById<RecyclerView>(R.id.recyclerView_content_cuisine ).adapter = ContentAdapter(list_c)
-                view.findViewById<RecyclerView>(R.id.recyclerView_keyword_cuisine ).adapter = KeywordAdapter(list_k)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_content_cuisine )?.adapter = ContentAdapter(list_c)
+                view?.findViewById<RecyclerView>(R.id.recyclerView_keyword_cuisine )?.adapter = KeywordAdapter(list_k)
             }
             //else ->
         }
