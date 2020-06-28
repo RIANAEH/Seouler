@@ -6,14 +6,24 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.seouler.Exc_Recycle_MainActivity
 import com.example.seouler.R
+import com.example.seouler.Recycle_MainActivity
+import com.example.seouler.VolleyService_weather.lat
+import com.example.seouler.VolleyService_weather.lon
 import com.example.seouler.Weather_MainActivity
 import kotlinx.android.synthetic.main.activity_chatbot.*
+import com.example.seouler.dataClass.WeatherDaily
+import com.example.seouler.dataClass.a_exchange
 
 class ChatBotActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatbot)
 
+        //API 활성화// 날씨, 환율
+
+
+
+        // 메시지를 보낸 후 응답을 받아, 응답의 인텐트에 따른 메소드를 실행한다.
         sendChatbotMessageButton.setOnClickListener {
             // 메시지를 보내고
             ChatBotAdapter.initAssistant(this, chatbotInputMessageTextView.text.toString())
@@ -42,11 +52,13 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotExchange() {
-        /*
-        val intent = Intent(this, Exc_Recycle_MainActivity::class.java)
-        Thread.sleep(1000) // 1초 대기
-        startActivity(intent)
-         */
+        val go_to_exc_intent = Intent(this, Exc_Recycle_MainActivity::class.java)
+        var rate_async = Recycle_MainActivity.Rate_Async(this, 0)
+        rate_async.execute()
+
+        Thread.sleep(2000) // 2초 대기
+
+        startActivity(go_to_exc_intent)
     }
 
     private fun onSeoulerChatBotPlaceRecommendation() {
@@ -54,10 +66,12 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotWeather() {
-        /*
-        val intent = Intent(this, Weather_MainActivity::class.java)
-        Thread.sleep(1000) // 1초 대기
-        startActivity(intent)
-         */
+        var WeatherDetailPreIntent = Intent(this, Weather_MainActivity::class.java)
+        var weather_async = Recycle_MainActivity.Weather_Async(this, WeatherDetailPreIntent, 37.5642135, 127.0016985) // API
+        weather_async.execute()
+
+        Thread.sleep(2000) // 2초 대기
+
+        startActivity(WeatherDetailPreIntent)
     }
 }
