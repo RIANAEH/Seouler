@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import com.example.seouler.*
+import com.example.seouler.Like.LikeMainActivity
 import kotlinx.android.synthetic.main.activity_chatbot.*
 import com.example.seouler.dataClass.WeatherDaily
 import org.json.JSONArray
@@ -36,15 +37,14 @@ class ChatBotActivity : AppCompatActivity() {
                 "SeoulerChatBotExchange" -> onSeoulerChatBotExchange()
                 "SeoulerChatBotPlaceRecommendation" -> onSeoulerChatBotPlaceRecommendation()
                 "SeoulerChatBotWeather" -> onSeoulerChatBotWeather()
+                "SeoulerChatBotLike" -> onSeoulerChatBotLike()
             }
         }
 
-        /*
         // 테스트용 버튼
         ChatBotTestButton.setOnClickListener {
-            onSeoulerChatBotWeather()
+            onSeoulerChatBotLike()
         }
-         */
     }
 
     private fun onSeoulerChatBotCurrentPlace() {
@@ -71,11 +71,16 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotWeather() {
+        // 구현 완료
         val WeatherDetailPreIntent = Intent(this, Weather_MainActivity::class.java)
         val weather_async = Weather_Async(this, WeatherDetailPreIntent, 37.5642135, 127.0016985) // API
         weather_async.execute()
     }
 
+    private fun onSeoulerChatBotLike() {
+        val intent = Intent(this, LikeMainActivity::class.java)
+        startActivity(intent)
+    }
 
 
     // 챗봇 전용 내부 클래스 =============================================================================================================
@@ -144,7 +149,6 @@ class ChatBotActivity : AppCompatActivity() {
             VolleyService_rate.testVolley(act) { testSuccess ->
                 if (testSuccess) {
                     var response_json = VolleyService_rate.response_json
-
                     Log.d("<Rate>","환율쓰2....JSON: $response_json")
                 } else {
                     Log.d("<Rate>","환율 실패...")
