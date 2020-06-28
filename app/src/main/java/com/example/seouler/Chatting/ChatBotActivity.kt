@@ -21,29 +21,27 @@ class ChatBotActivity : AppCompatActivity() {
             // 인텐트를 받아오기
             val result = ChatBotAdapter.detectIntentText(123, chatbotInputMessageTextView.text.toString())
             chatbotResponse.text = result.fulfillmentText
-            val dn: String = result.intent.displayName
 
             // 인텐트 종류에 따라 다양한 앱 기능 실행
-            when(dn) {
+            when(result.intent.displayName) {
                 "SeoulerChatBotCurrentPlace" -> onSeoulerChatBotCurrentPlace()
                 "SeoulerChatBotDestinationPlace" -> onSeoulerChatBotDestinationPlace()
                 "SeoulerChatBotExchange" -> onSeoulerChatBotExchange()
                 "SeoulerChatBotPlaceRecommendation" -> onSeoulerChatBotPlaceRecommendation()
                 "SeoulerChatBotWeather" -> onSeoulerChatBotWeather()
-                else -> doNothing()
             }
         }
     }
 
-    fun onSeoulerChatBotCurrentPlace() {
-
-    }
-
-    fun onSeoulerChatBotDestinationPlace() {
+    private fun onSeoulerChatBotCurrentPlace() {
         // 아직 미구현
     }
 
-    fun onSeoulerChatBotExchange() {
+    private fun onSeoulerChatBotDestinationPlace() {
+        // 아직 미구현
+    }
+
+    private fun onSeoulerChatBotExchange() {
         /*
         val intent = Intent(this, Exc_Recycle_MainActivity::class.java)
         Thread.sleep(1000) // 1초 대기
@@ -51,19 +49,15 @@ class ChatBotActivity : AppCompatActivity() {
          */
     }
 
-    fun onSeoulerChatBotPlaceRecommendation() {
+    private fun onSeoulerChatBotPlaceRecommendation() {
         // 아직 미구현
     }
 
-    fun onSeoulerChatBotWeather() {
+    private fun onSeoulerChatBotWeather() {
         /*
         val intent = Intent(this, Weather_MainActivity::class.java)
         Thread.sleep(1000) // 1초 대기
         startActivity(intent)
          */
-    }
-
-    fun doNothing() {
-        // 아무것도 안하는 PASS 수단용 메소드
     }
 }
