@@ -15,7 +15,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.seouler.PlaceLikingActivity
+import com.example.seouler.PlaceInfoActivity
 import com.example.seouler.R
 import com.example.seouler.dataClass.SearchPlace
 import kotlinx.android.synthetic.main.activity_search_main.*
@@ -163,7 +163,7 @@ class SearchMainActivity : AppCompatActivity() {
             ) {
                 if (position != RecyclerView.NO_POSITION) { // 리스너 객체의 메서드 호출.
 ////////////////////상세정보로 넘어가기/////////////////////////////////////////////////////
-                    val detail_intent = Intent(mAdapter.context, PlaceLikingActivity::class.java)
+                    val detail_intent = Intent(mAdapter.context, PlaceInfoActivity::class.java)
                     detail_intent.putExtra("contentId", placelist[position].contentid)
                     ContextCompat.startActivity(mAdapter.context, detail_intent, null)
                 }
