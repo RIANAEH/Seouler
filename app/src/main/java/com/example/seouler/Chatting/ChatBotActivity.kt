@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import com.example.seouler.*
 import com.example.seouler.Like.LikeMainActivity
-import com.example.seouler.dataClass.Location
 import kotlinx.android.synthetic.main.activity_chatbot.*
 import com.example.seouler.dataClass.WeatherDaily
+import com.google.protobuf.Struct
+import com.google.protobuf.Value
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
@@ -34,17 +35,11 @@ class ChatBotActivity : AppCompatActivity() {
             // 인텐트 종류에 따라 다양한 앱 기능 실행
             when(result.intent.displayName) {
                 "SeoulerChatBotCurrentPlace" -> onSeoulerChatBotCurrentPlace()
-                "SeoulerChatBotDestinationPlace" -> onSeoulerChatBotDestinationPlace()
+                "SeoulerChatBotDestinationSearch" -> onSeoulerChatBotDestinationSearch(result.parameters)
                 "SeoulerChatBotExchange" -> onSeoulerChatBotExchange()
-                "SeoulerChatBotPlaceRecommendation" -> onSeoulerChatBotPlaceRecommendation()
                 "SeoulerChatBotWeather" -> onSeoulerChatBotWeather()
                 "SeoulerChatBotLike" -> onSeoulerChatBotLike()
             }
-        }
-
-        // 테스트용 버튼
-        ChatBotTestButton.setOnClickListener {
-            onSeoulerChatBotCurrentPlace()
         }
     }
 
@@ -58,12 +53,16 @@ class ChatBotActivity : AppCompatActivity() {
         startActivity(webIntent)
     }
 
-    private fun onSeoulerChatBotDestinationPlace() {
-        // 아직 미구현
-        val intent = Intent(this, ChatbotWebViewActivity::class.java)
-        //intent.putExtra("locationX", )
-        //intent.putExtra("locationY", )
-        startActivity(intent)
+    private fun onSeoulerChatBotDestinationSearch(searchParameter: Struct) {
+        val webIntent = Intent(this, ChatbotWebViewActivity::class.java)
+
+        val searchStruct: Value = searchParameter.getFieldsOrThrow("any")
+        val url = "https://www.google.com/search?q=" + searchStruct.stringValue
+        webIntent.putExtra("url", url)
+
+        Thread.sleep(1000)
+
+        startActivity(webIntent)
     }
 
     private fun onSeoulerChatBotExchange() {
@@ -74,10 +73,6 @@ class ChatBotActivity : AppCompatActivity() {
         Thread.sleep(2000) // 2초 대기
 
         startActivity(go_to_exc_intent)
-    }
-
-    private fun onSeoulerChatBotPlaceRecommendation() {
-        // 아직 미구현
     }
 
     private fun onSeoulerChatBotWeather() {
