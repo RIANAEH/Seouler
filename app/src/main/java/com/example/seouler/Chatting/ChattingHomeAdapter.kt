@@ -2,6 +2,7 @@ package com.example.seouler.Chatting
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,9 @@ class ChattingHomeAdapter : RecyclerView.Adapter<Holder>(){
 class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){
     lateinit var chattingHomeContext : Context
     fun setChattingRoom(room : ChattingRoom, position : Int, userId : Long){
+        if(position == 0) {
+            itemView.chattingroomCellImageView.setImageResource(R.drawable.public_chat_room_icon)
+        }
         itemView.chattingroomCellButton.text = "${room.title}"
         var time : Long = ((System.currentTimeMillis()-room.timestamp)/1000)/60
         var timeMessage : String = ""
