@@ -1,7 +1,5 @@
 package com.example.seouler.Recommend
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +12,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class GetContentTask(val list_c: ArrayList<ContentItem>, val list_k: ArrayList<KeywordItem>, val contentTypedId: String?, val cat1: String?, val cat2: String?, val cat3: String?, val view: Recommend_MainActivity?) : AsyncTask<Any?, Any?, Any?>() {
-    var firstimage: Bitmap? = null
 
     override fun doInBackground(vararg params: Any?): Any? {
 
@@ -55,8 +52,7 @@ class GetContentTask(val list_c: ArrayList<ContentItem>, val list_k: ArrayList<K
             for(i in 0 until jarray.length()) {
                 val obj = jarray.getJSONObject(i)
                 val contentid = obj.getString("contentid")
-                //val firstimageurl = obj.getString("firstimage")
-                firstimage = BitmapFactory.decodeStream(URL(obj.getString("firstimage")).openStream())
+                val firstimage = obj.getString("firstimage")
                 val readcount = obj.getString("readcount").toInt()
                 val title = obj.getString("title")
 

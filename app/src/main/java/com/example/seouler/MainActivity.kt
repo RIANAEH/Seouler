@@ -22,11 +22,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import com.example.seouler.Recommend.*
 import com.example.seouler.Search.PlaceDetailIconActivity
 import com.example.seouler.Search.SearchMainActivity
 import com.example.seouler.dataClass.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.example.seouler.dataClass.Location as LocationData
 
 
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var locationCallback:LocationCallback
     var set_rate_index : Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -97,6 +98,9 @@ class MainActivity : AppCompatActivity() {
                 //없으면 DB에 추가
                 if(!isThere){
                     userRef.child("${USERID}").setValue(User(false, USERNAME, USERID, USERID))
+                    FirebaseFirestore.getInstance().collection("Users").document(USERID.toString()).collection("Like")
+                        .document("Count").set(mapOf("count" to 0))
+                        .addOnFailureListener { e -> Log.w("태그", "Oh no", e) }
                 }
             }
 
@@ -134,11 +138,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
         // 추천 페이지 버튼
         btn_recommend.setOnClickListener {
             val recommend_intent = Intent(this, Recommend_MainActivity::class.java)
+            //recommend_intent.putExtra("userId", USERID)
             startActivity(recommend_intent)
         }
 

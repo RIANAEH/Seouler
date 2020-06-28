@@ -8,8 +8,7 @@ import android.text.Html
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.Dimension
-import com.example.seouler.PlaceLikingActivity
+import com.example.seouler.PlaceInfoActivity
 import com.example.seouler.R
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -18,7 +17,7 @@ import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
-class GetDetailTask(val contentId: String, val view: PlaceLikingActivity) : AsyncTask<Any?, Any?, Any?>() {
+class GetDetailTask(val contentId: String, val view: PlaceInfoActivity) : AsyncTask<Any?, Any?, Any?>() {
     var buffer:String? = null
     var firstimage: Bitmap? = null
     var title: String? = null
@@ -32,7 +31,6 @@ class GetDetailTask(val contentId: String, val view: PlaceLikingActivity) : Asyn
 
         var urlString =
             "http://api.visitkorea.or.kr/openapi/service/rest/EngService/detailCommon?ServiceKey=I23jHEEvrpNKlQiFjB8me4jV48AF6y2Sj0mGzBX0s4jce9OyTCgYqNi31f6LgQgncOTlVO6Wzal8vv96JHegig%3D%3D&numOfRows=10&pageNo=1&MobileOS=AND&MobileApp=Seouler&contentId="+contentId+"&defaultYN=Y&firstImageYN=Y&addrinfoYN=Y&overviewYN=Y&transGuideYN=Y&_type=json"
-        Log.d("태그", "url: $urlString")
         try {
             val url: URL = URL(urlString)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
