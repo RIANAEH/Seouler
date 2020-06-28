@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         // 추천 페이지 버튼
         btn_recommend.setOnClickListener {
             val recommend_intent = Intent(this, Recommend_MainActivity::class.java)
-            //recommend_intent.putExtra("userId", USERID)
+            recommend_intent.putExtra("userId", USERID)
             startActivity(recommend_intent)
         }
 
