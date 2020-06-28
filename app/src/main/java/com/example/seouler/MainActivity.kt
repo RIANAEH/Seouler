@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     var myChattingRoomMessageList : ArrayList<ArrayList<Message>> = ArrayList()
     val permissions = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     var locationPermittedAll = false
-    var myLocation : LocationData = LocationData(-200.0, -200.0)
+    var myLocation : LocationData = LocationData(126.970466, 37.555266)
     var USERID = System.currentTimeMillis()
     var USERNAME = ""
     private lateinit var fusedLocationClient:FusedLocationProviderClient
@@ -128,10 +128,6 @@ class MainActivity : AppCompatActivity() {
 
 
         mainItineraryButton.setOnClickListener {
-            if (myLocation.locationX == -200.0 && myLocation.locationY == -200.0) {
-                Toast.makeText(this, "Try again. Can't get GPS",Toast.LENGTH_SHORT).show()
-                //do nothing
-            } else {
                 val iti_intent = Intent(this, Recycle_MainActivity::class.java)
                 iti_intent.putExtra("SetRateIndex", set_rate_index)
                 iti_intent.putExtra("userId", USERID)
@@ -139,7 +135,6 @@ class MainActivity : AppCompatActivity() {
                 iti_intent.putExtra("lat", myLocation.locationY)
                 startActivityForResult(iti_intent, 2)
 
-            }
         }
 
         // 추천 페이지 버튼

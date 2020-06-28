@@ -12,10 +12,14 @@ import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.seouler.Like.map_like
+import com.example.seouler.Recommend.ContentItem
+import com.example.seouler.dataClass.Location
 import com.example.seouler.dataClass.WeatherDaily
 import com.example.seouler.dataClass.a_exchange
 import com.example.seouler.dataClass.a_plan
 import com.google.firebase.Timestamp
+import com.google.firebase.database.*
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.model.value.TimestampValue
@@ -49,24 +53,57 @@ class Recycle_MainActivity : AppCompatActivity() {
     var month = lcDate.monthValue//calendar.get(Calendar.MONTH)
     var day = lcDate.dayOfMonth //calendar.get(Calendar.DAY_OF_MONTH)
     var uid = ""
-    var firestore = FirebaseFirestore.getInstance()
-    var cUsersRef = firestore.collection("Users")
-    lateinit var dUserPlanRef : DocumentReference
+    //var firestore = FirebaseFirestore.getInstance()
+
+    var nFbRef= FirebaseDatabase.getInstance().getReference();
+    var nFbIti = nFbRef.child("Itinerary") //NEW
+    var nFbItUsers = nFbIti.child("Users")
+    var nFbItTheUser : DatabaseReference = nFbItUsers.child("dummy")
+    // var cUsersRef = firestore.collection("Users")
+    //lateinit var dUserPlanRef : DocumentReference
     //lateinit var cFirestore : FirestoreRefs
     lateinit var mAdapter : MainRvAdapter
-    val dateSetListener =
-    DatePickerDialog.OnDateSetListener() { datePicker: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-        //tv_date.setText(year.toString() + "/ " + (monthOfYear+1).toString() + "/ " + dayOfMonth.toString());
-        tv_date.text = date_to_string(year, monthOfYear + 1, dayOfMonth, "/ ")
-        this.year = year
-        this.month = monthOfYear + 1
-        this.day = dayOfMonth
-        lcDate_set = LocalDate.of(this.year, this.month, this.day)
-        update_setDate(lcDate_set)
-        UpdatePlanListFromFirestore(mAdapter)
+    var FbPlansListener = object  : ValueEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            TODO("Not yet implemented")
+        }
 
+        override fun onDataChange(p0: DataSnapshot) {
+            planlist.clear()
+            for (data in p0.children) {
+                if (date_to_string(lcDate_set.year, lcDate_set.monthValue, lcDate_set.dayOfMonth, "-") == data.key as String) {
+                    for (dataChild in data.children){
+                        var tmp_t = dataChild.child("time")
+                        var tmp_time = LocalTime.of(
+                            (tmp_t.child("hour").value.toString().toInt()),
+                            (tmp_t.child("minute").value.toString().toInt())
+                        )
+                        var tmp_geo = GeoPoint(dataChild.child("geoLatlon").child("latitude").value.toString().toDouble(), dataChild.child("geoLatlon").child("longitude").value.toString().toDouble())
+                        var tmp_dest = dataChild.child("destName").value.toString()
+
+                        planlist.add(a_plan(tmp_time, tmp_dest, dataChild.key!!, tmp_geo))
+
+                    }
+                    println("<firestore> Success : ${data}")
+                    println("<SSSS> ${data.getValue().toString()}")
+
+                }
+            }
+            mAdapter.notifyDataSetChanged()
+        }
     }
+    val dateSetListener =
+        DatePickerDialog.OnDateSetListener() { datePicker: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            tv_date.text = date_to_string(year, monthOfYear + 1, dayOfMonth, "/ ")
+            this.year = year
+            this.month = monthOfYear + 1
+            this.day = dayOfMonth
+            lcDate_set = LocalDate.of(this.year, this.month, this.day)
+            update_setDate(lcDate_set)
+            //UpdatePlanListFromFirestore(mAdapter)
+            nFbItTheUser.addValueEventListener(FbPlansListener)
 
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,11 +113,40 @@ class Recycle_MainActivity : AppCompatActivity() {
         uid = intent.getLongExtra("userId", 0).toString()  ///UID 설정!
         lat = intent.getDoubleExtra("lat", 0.0)
         lon = intent.getDoubleExtra("lon", 0.0)
-        var tmp = hashMapOf(
-            "uid" to uid
-        )
-        dUserPlanRef = cUsersRef.document(uid)
-        dUserPlanRef.set(tmp)
+
+
+
+
+        var FbUserCheck = object  : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                var check = false
+                for (data in p0.children){
+                    if(uid == data.key as String) { // UID 존재
+                        nFbItTheUser = nFbItUsers.child(uid)
+                        check = true
+                        break
+                    }
+                }
+                if(!check){
+                    nFbItUsers.child(uid).setValue(null)
+                    check = true
+                }
+
+                nFbItTheUser.addValueEventListener(FbPlansListener)
+                //nFbItTheUser.addValueEventListener(nFbPlansChildListener)
+
+
+            }
+        }
+
+        nFbItUsers.addValueEventListener(FbUserCheck)
+
+
+
         var WeatherDetailPreIntent = Intent(applicationContext, Weather_MainActivity::class.java)
         //날씨 클릭리스너 설정
         simple_weather.setOnClickListener {
@@ -136,13 +202,16 @@ class Recycle_MainActivity : AppCompatActivity() {
         btn_left.setOnClickListener {
             lcDate_set = lcDate_set.minusDays(1)
             update_setDate(lcDate_set)
-            UpdatePlanListFromFirestore(mAdapter)
+            //UpdatePlanListFromFirestore(mAdapter)
+            //nFbItTheUser.child(date_to_string(lcDate_set.year, lcDate_set.monthValue, lcDate_set.dayOfMonth, "-"))
+            nFbItTheUser.addValueEventListener(FbPlansListener)
         }
 
         btn_right.setOnClickListener {
             lcDate_set = lcDate_set.plusDays(1)
             update_setDate(lcDate_set)
-            UpdatePlanListFromFirestore(mAdapter)
+            //UpdatePlanListFromFirestore(mAdapter)
+            nFbItTheUser.addValueEventListener(FbPlansListener)
         }
 
         recycler_view.layoutManager = lm as RecyclerView.LayoutManager?
@@ -176,7 +245,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                 }
             }
         })
-        UpdatePlanListFromFirestore(mAdapter)
+        //UpdatePlanListFromFirestore(mAdapter)
         recycler_view.adapter = mAdapter
 
         mAdapter.notifyDataSetChanged()
@@ -186,46 +255,37 @@ class Recycle_MainActivity : AppCompatActivity() {
     }
 
     //파이어스토에서 값 가져와서 planlist에 얹히기
-     fun UpdatePlanListFromFirestore(mAdapter :MainRvAdapter) {
-        planlist.removeAll(planlist)
-        dUserPlanRef.collection(date_to_string(year, month, day, "-"))
-            .get()
-            .addOnSuccessListener { documents ->
-                    // println("<firestore> getDoc ${document.id} => ${document.data}")
-                    //dUserPlanRef = document.reference                                       // DOC REF INIT 만약 doc 존재하지 않을때가 문제...
+    /*fun UpdatePlanListFromFirestore(mAdapter :MainRvAdapter) {
 
-                    println("<firestore> $year, $month, $day")
-                    for (document in documents) {
-                        println("<firestore> Success : ${document.id} => ${document.data}")
+        println("모르겠따씨 $nFbItTheUser")
+        planlist.clear()
+        for (data in p0.children) {
+            if (date_to_string(lcDate_set.year, lcDate_set.monthValue, lcDate_set.dayOfMonth, "-") == data.key as String) {
+                for (dataChild in data.children){
+                    var tmp_t = dataChild.child("time")
+                    var tmp_time = LocalTime.of(
+                        (tmp_t.child("hour").value.toString().toInt()),
+                        (tmp_t.child("minute").value.toString().toInt())
+                    )
+                    var tmp_geo = GeoPoint(dataChild.child("geoLatlon").child("latitude").value.toString().toDouble(), dataChild.child("geoLatlon").child("longitude").value.toString().toDouble())
+                    var tmp_dest = dataChild.child("destName").value.toString()
 
-                        var tmp_t = document.data.get("time") as Map<String, Unit>
-                        var tmp_time = LocalTime.of(
-                            (tmp_t.get("hour") as Long).toInt(),
-                            (tmp_t.get("minute") as Long).toInt()
-                        )
-                        var tmp_geo = document.data.get("geoLatlon") as GeoPoint
-                        var tmp_dest = document.data.get("destName") as String
+                    planlist.add(a_plan(tmp_time, tmp_dest, dataChild.key!!, tmp_geo))
 
-                        planlist.add(a_plan(tmp_time, tmp_dest, document.id, tmp_geo))
-                    }
-
-
-
-                mAdapter.notifyDataSetChanged()
+                }
+                println("<firestore> Success : ${data}")
+                println("<SSSS> ${data.getValue().toString()}")
 
             }
-            .addOnFailureListener{ e ->
-                Log.d("<F>", "$e")
-
-            }
-        println("<BIND> In RecycleMain_ $planlist")
+        }
+        mAdapter.notifyDataSetChanged()
 
         onResume()
         println("<planlist> $planlist")
-    }
+    }*/
 
     //날짜 세팅
-     fun update_setDate(WlcDate_set: LocalDate) {
+    fun update_setDate(WlcDate_set: LocalDate) {
         this.year = WlcDate_set.year
         this.month = WlcDate_set.monthValue
         this.day = WlcDate_set.dayOfMonth
@@ -298,53 +358,34 @@ class Recycle_MainActivity : AppCompatActivity() {
                 )
 
                 if (position != -1) {
-                    //UpdatePlanListFromFirestore(mAdapter)
-                    val docRef = dUserPlanRef.collection(strDate)
-                    // DB UPDATE
                     if (date_y != this.year || date_m != this.month || date_d != this.day) {
                         //dUserPlanRef.document(docId).delete()
-                        println("<INDATE> $date_y ${this.year}, $date_m ${this.month}, ... ${dUserPlanRef.id}")
-                        dUserPlanRef.collection(
-                            date_to_string(
-                                this.year,
-                                this.month,
-                                this.day,
-                                "-"
-                            )
-                        ).document(docId).delete()
-                            .addOnSuccessListener { result ->
-                                println("DocumentSnapshot deleted with ID: ${docId}")
-                            }
+                        //println("<INDATE> $date_y ${this.year}, $date_m ${this.month}, ... ${dUserPlanRef.id}")
+                        /* dUserPlanRef.collection(
+                             date_to_string(
+                                 this.year,
+                                 this.month,
+                                 this.day,
+                                 "-"
+                             )
+                         ).document(docId).delete()*/
+
+                        nFbItTheUser.child(date_to_string(this.year, this.month, this.day, "-")).child(docId).setValue(null) // 값 지우기
                         planlist.removeAt(position)
 
                     }
-                    docRef.document(docId).set(samplePlan)
-                        .addOnSuccessListener { documentReference ->
-                            println("DocumentSnapshot added with ID: ${docId}")
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error adding document $e")
-                        }
-                    // DONE UPDATE
+
+                    nFbItTheUser.child(strDate).child(docId).setValue(samplePlan)
 
 
                 } else { //신규추가
-                    val docRef = dUserPlanRef.collection(strDate)
-                    docRef.whereEqualTo("destName", dest).whereEqualTo("time",time).get()
-                        .addOnSuccessListener { documentReference ->
-                            println("<PRINT> documentReference : ${documentReference.documents}")
-                        }
-                    docRef.add(samplePlan)
-                        .addOnSuccessListener { documentReference ->
-                            println("DocumentSnapshot added with ID: ${docId}")
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error adding document $e")
-                        }
+                    nFbItUsers.child(uid).child(strDate).push().setValue(samplePlan) //New
                 }
 
-                UpdatePlanListFromFirestore(mAdapter)
+                //UpdatePlanListFromFirestore(mAdapter)
                 mAdapter.notifyDataSetChanged()
+
+
             }
 
 
@@ -360,8 +401,8 @@ class Recycle_MainActivity : AppCompatActivity() {
 
     class Rate_Async(mainActivity: Activity, setrateindex: Int) :
         AsyncTask<Int?, Int, List<String>>() {
-         var act = mainActivity
-         var set_rate_index = setrateindex
+        var act = mainActivity
+        var set_rate_index = setrateindex
         override fun doInBackground(vararg params: Int?): List<String>? {
 
             VolleyService_rate.testVolley(act) { testSuccess ->
@@ -419,7 +460,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                         preIntent.putExtra(i.toString()+"max", wDailyList[i].tMax)
                         preIntent.putExtra(i.toString()+"icon", wDailyList[i].stricon)
 
-                   }
+                    }
 
                     var strWeatherNowTemp = jWeatherCurrent.get("temp").toString() + "℃"
                     var jWeatherNowWeatherArray = jWeatherCurrent.get("weather") as JSONArray
@@ -493,8 +534,8 @@ class Recycle_MainActivity : AppCompatActivity() {
         }
 
         companion object {
-             var trustManagers: Array<TrustManager>? = null
-             val _AcceptedIssuers =
+            var trustManagers: Array<TrustManager>? = null
+            val _AcceptedIssuers =
                 arrayOf<X509Certificate>()
 
             fun allowAllSSL() {

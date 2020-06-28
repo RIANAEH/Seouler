@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import com.example.seouler.*
+import com.example.seouler.Like.LikeMainActivity
 import kotlinx.android.synthetic.main.activity_chatbot.*
 import com.example.seouler.dataClass.WeatherDaily
 import org.json.JSONArray
@@ -36,27 +37,35 @@ class ChatBotActivity : AppCompatActivity() {
                 "SeoulerChatBotExchange" -> onSeoulerChatBotExchange()
                 "SeoulerChatBotPlaceRecommendation" -> onSeoulerChatBotPlaceRecommendation()
                 "SeoulerChatBotWeather" -> onSeoulerChatBotWeather()
+                "SeoulerChatBotLike" -> onSeoulerChatBotLike()
             }
         }
 
-        /*
         // 테스트용 버튼
         ChatBotTestButton.setOnClickListener {
-            onSeoulerChatBotWeather()
+            onSeoulerChatBotCurrentPlace()
         }
-         */
     }
 
     private fun onSeoulerChatBotCurrentPlace() {
         // 아직 미구현
+        val intent = Intent(this, ChatbotWebViewActivity::class.java)
+        val locationX = 37.5131171
+        val locationY = 126.9449039
+        val url = "https://www.google.co.kr/maps/@" + locationX.toString() + "," + locationY.toString() + ",17.75z?hl=ko"
+        intent.putExtra("url", url)
+        startActivity(intent)
     }
 
     private fun onSeoulerChatBotDestinationPlace() {
         // 아직 미구현
+        val intent = Intent(this, ChatbotWebViewActivity::class.java)
+        //intent.putExtra("locationX", )
+        //intent.putExtra("locationY", )
+        startActivity(intent)
     }
 
     private fun onSeoulerChatBotExchange() {
-        // 구현 완료
         val go_to_exc_intent = Intent(this, Exc_Recycle_MainActivity::class.java)
         var rate_async = Rate_Async(this)
         rate_async.execute()
@@ -76,6 +85,10 @@ class ChatBotActivity : AppCompatActivity() {
         weather_async.execute()
     }
 
+    private fun onSeoulerChatBotLike() {
+        val intent = Intent(this, LikeMainActivity::class.java)
+        startActivity(intent)
+    }
 
 
     // 챗봇 전용 내부 클래스 =============================================================================================================
@@ -144,7 +157,6 @@ class ChatBotActivity : AppCompatActivity() {
             VolleyService_rate.testVolley(act) { testSuccess ->
                 if (testSuccess) {
                     var response_json = VolleyService_rate.response_json
-
                     Log.d("<Rate>","환율쓰2....JSON: $response_json")
                 } else {
                     Log.d("<Rate>","환율 실패...")
