@@ -1,17 +1,15 @@
 package com.example.seouler.Chatting
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.example.seouler.*
 import kotlinx.android.synthetic.main.activity_chatbot.*
 import com.example.seouler.dataClass.WeatherDaily
-import com.example.seouler.dataClass.a_exchange
-import kotlinx.android.synthetic.main.activity_recycle_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
@@ -40,6 +38,13 @@ class ChatBotActivity : AppCompatActivity() {
                 "SeoulerChatBotWeather" -> onSeoulerChatBotWeather()
             }
         }
+
+        /*
+        // 테스트용 버튼
+        ChatBotTestButton.setOnClickListener {
+            onSeoulerChatBotWeather()
+        }
+         */
     }
 
     private fun onSeoulerChatBotCurrentPlace() {
@@ -66,14 +71,9 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotWeather() {
-        // 아직 구현 안됨
-        var WeatherDetailPreIntent = Intent(this, Weather_MainActivity::class.java)
-        var weather_async = Weather_Async(this, WeatherDetailPreIntent, 37.5642135, 127.0016985) // API
+        val WeatherDetailPreIntent = Intent(this, Weather_MainActivity::class.java)
+        val weather_async = Weather_Async(this, WeatherDetailPreIntent, 37.5642135, 127.0016985) // API
         weather_async.execute()
-
-        Thread.sleep(2000) // 2초 대기
-
-        startActivity(WeatherDetailPreIntent)
     }
 
 
@@ -111,7 +111,6 @@ class ChatBotActivity : AppCompatActivity() {
                         preIntent.putExtra(i.toString()+"min", wDailyList[i].tMin)
                         preIntent.putExtra(i.toString()+"max", wDailyList[i].tMax)
                         preIntent.putExtra(i.toString()+"icon", wDailyList[i].stricon)
-
                     }
 
                     var strWeatherNowTemp = jWeatherCurrent.get("temp").toString() + "℃"
@@ -125,6 +124,9 @@ class ChatBotActivity : AppCompatActivity() {
                     preIntent.putExtra("nowSunrise", Date(jWeatherCurrent.getInt("sunrise").toLong()).time)
                     preIntent.putExtra("nowSunset", Date(jWeatherCurrent.getInt("sunset").toLong()).time )
                     preIntent.putExtra("nowHumidity", jWeatherCurrent.get("humidity") as Int)
+
+                    Log.d("preIntentExtras", preIntent.extras.toString())
+                    startActivity(con, preIntent, preIntent.extras)
                 } else {
                     println("통신 실패...!")
                 }
