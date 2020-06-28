@@ -3,6 +3,7 @@ package com.example.seouler.Recommend
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import com.example.seouler.Like.map_like
 import com.example.seouler.R
@@ -20,10 +21,13 @@ var buffer = "" // api 호출 결과를 담아온다.
 
 class Recommend_MainActivity : AppCompatActivity() {
     lateinit var uid: String
+    var sis: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recommend__main)
+
+        sis = savedInstanceState
 
         uid = intent.getLongExtra("userId", 0).toString()
         var fireRef = FirebaseDatabase.getInstance().getReference("Like")
@@ -237,32 +241,36 @@ class Recommend_MainActivity : AppCompatActivity() {
         super.onRestart()
         setContentView(R.layout.activity_recommend__main)
 
+
+        this.findViewById<ImageButton>(R.id.btn_plus_attraction).setOnClickListener {
+            showPlusDialog("Attraction")
+            Log.d("태그", "버튼 굿")
+        }
+
+        this.findViewById<ImageButton>(R.id.btn_plus_cultural).setOnClickListener {
+            showPlusDialog("Cultural")
+        }
+
+        this.findViewById<ImageButton>(R.id.btn_plus_accommodation).setOnClickListener {
+            showPlusDialog("Accommodation")
+        }
+
+        this.findViewById<ImageButton>(R.id.btn_plus_shopping).setOnClickListener {
+            showPlusDialog("Shopping")
+        }
+
+        this.findViewById<ImageButton>(R.id.btn_plus_cuisine).setOnClickListener {
+            showPlusDialog("Cuisine")
+        }
+
         DisplayTask("76", this).execute()
         DisplayTask("75", this).execute()
         DisplayTask("80", this).execute()
         DisplayTask("79", this).execute()
         DisplayTask("82", this).execute()
 
-        btn_plus_attraction.setOnClickListener {
-            showPlusDialog("Attraction")
-        }
-
-        btn_plus_cultural.setOnClickListener {
-            showPlusDialog("Cultural")
-        }
-
-        btn_plus_accommodation.setOnClickListener {
-            showPlusDialog("Accommodation")
-        }
-
-        btn_plus_shopping.setOnClickListener {
-            showPlusDialog("Shopping")
-        }
-
-        btn_plus_cuisine.setOnClickListener {
-            showPlusDialog("Cuisine")
-        }
     }
+
 
     override fun onBackPressed() {
         super.onBackPressed()
