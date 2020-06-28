@@ -35,6 +35,13 @@ class ChattingHomeActivity : AppCompatActivity() {
         /* 챗봇 클릭했을 때의 리스너 */
         chatbotCellButton.setOnClickListener {
             val chatBotIntent = Intent(this, ChatBotActivity::class.java)
+            val myLocation = intent.extras!!["myLocation"] as LocationData
+            val locationX = myLocation.locationX
+            val locationY = myLocation.locationY
+            chatBotIntent.putExtra("locationX", locationX)
+            chatBotIntent.putExtra("locationY", locationY)
+            Log.d("ChatbotExtra", chatBotIntent.extras!!["locationX"].toString())
+            Log.d("ChatbotExtra", chatBotIntent.extras!!["locationY"].toString())
             startActivity(chatBotIntent)
         }
 
