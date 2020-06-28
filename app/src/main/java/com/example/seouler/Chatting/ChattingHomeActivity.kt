@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.renderscript.Sampler
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,10 @@ class ChattingHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chattinghome)
+
+        supportActionBar!!.title = "CHATTING"
+
+
 
         /* 챗봇 클릭했을 때의 리스너 */
         chatbotCellButton.setOnClickListener {
@@ -53,44 +59,41 @@ class ChattingHomeActivity : AppCompatActivity() {
         chattinghomeRecyclerView.layoutManager = LinearLayoutManager(this)
 
 
-
-        chattingHomeHeaderMenuButton.setOnClickListener {
-            var menuPopup = PopupMenu(this, chattingHomeHeaderMenuButton)
-            menuPopup.menuInflater.inflate(R.menu.menu_chattinghome, menuPopup.menu)
-
-            menuPopup.setOnMenuItemClickListener {
-                val item = it.itemId
-
-                when(item){
-                    R.id.menuitem_createroom -> {
-                        val nextIntent = Intent(this, CreateRoomAcvitivy::class.java)
-                        nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
-                        nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
-                        startActivity(nextIntent)
-                    }
-                    R.id.menuitem_searchroom -> {
-                        val nextIntent = Intent(this, SearchRoomActivity::class.java)
-                        nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
-                        nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
-                        startActivity(nextIntent)
-
-                    }
-                }
-                true
-
-
-            }
-            menuPopup.show()
-
-
-        }
-
     }
 
     override fun onResume() {
         super.onResume()
         loadChattingRoom(intent.extras!!["userId"] as Long)
         adapter.notifyDataSetChanged()
+    }
+
+    //액션버튼 메뉴 액션바에 집어 넣기
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_chattinghome, menu)
+        return true
+    }
+
+    //액션버튼 클릭 했을 때
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.menuitem_createroom -> {
+                //검색 버튼 눌렀을 때
+                val nextIntent = Intent(this, CreateRoomAcvitivy::class.java)
+                nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
+                nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
+                startActivity(nextIntent)
+                return super.onOptionsItemSelected(item)
+            }
+            R.id.menuitem_searchroom -> {
+                //공유 버튼 눌렀을 때
+                val nextIntent = Intent(this, SearchRoomActivity::class.java)
+                nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
+                nextIntent.putExtra("myLocation", intent.extras!!["myLocation"] as LocationData)
+                startActivity(nextIntent)
+                return super.onOptionsItemSelected(item)
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
     fun loadChattingRoom(userId : Long){
         var partData : ArrayList<Participation> = ArrayList()
@@ -160,6 +163,14 @@ class ChattingHomeActivity : AppCompatActivity() {
                     }
                 }
                 chattingRoomList.reverse()
+                val PUBLIC_ROOM_ID : Long = 1
+                for(i in 0 .. chattingRoomList.size-1){
+                    if(chattingRoomList[i].roomId == PUBLIC_ROOM_ID){
+                        chattingRoomList.add(0, chattingRoomList[i])
+                        chattingRoomList.removeAt(i+1)
+                        break
+                    }
+                }
                 Log.d("ChattingHomeActivity","G room count : ${chattingRoomList.count()}")
                 adapter.notifyDataSetChanged()
             }

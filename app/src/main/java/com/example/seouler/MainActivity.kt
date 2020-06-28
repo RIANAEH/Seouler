@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
 
         /* 안드로이드 단말 번호를 UserId로 사용 */
         /* DB에서 저장된 정보가 있는지 확인 후 없으면 uid를 새로 생성*/
-
         USERNAME = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
         Log.d("MainActivity-userId", "USERNAME : ${USERNAME}")
         var isThere = false
@@ -95,12 +94,17 @@ class MainActivity : AppCompatActivity() {
                         isThere = true
                     }
                 }
-                //없으면 DB에 추가
+                //없으면 DB에 추가하고 Public Room에 참여시킴.
                 if(!isThere){
                     userRef.child("${USERID}").setValue(User(false, USERNAME, USERID, USERID))
                     FirebaseFirestore.getInstance().collection("Users").document(USERID.toString()).collection("Like")
                         .document("Count").set(mapOf("count" to 0))
                         .addOnFailureListener { e -> Log.w("태그", "Oh no", e) }
+                    var partRef = FirebaseDatabase.getInstance().getReference("participation")
+                    var partUid = System.currentTimeMillis()
+                    partRef.child("${partUid}").setValue(Participation(
+                        USERID, 1, partUid
+                    ))
                 }
             }
 

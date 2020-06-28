@@ -7,60 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="#CCCCCC"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintBottom_toTopOf="@+id/chatbotCellButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        />
-
-    <TextView
-        android:id="@+id/chattingHomeHeaderTextView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#00FFFFFF"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="20dp"
-        android:text="My Chatting"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toStartOf="@+id/chattingHomeHeaderMenuButton"
-        app:layout_constraintStart_toStartOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/chattingHomeHeaderMenuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:text="Menu"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar" />
-
     <TextView
         android:id="@+id/chatbotSectionBarTextView"
         android:layout_width="411dp"
-        android:layout_height="20dp"
-        android:background="#666666"
+        android:layout_height="17dp"
+        android:background="#69BFE7"
         android:paddingLeft="10dp"
         android:text="My Chat Bot"
         android:textColor="#FFFFFF"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/imageChatBot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageChatBot"
@@ -89,11 +49,12 @@
     <TextView
         android:id="@+id/chattingroomsSectionBarTextView"
         android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:background="#666666"
+        android:layout_height="17dp"
+        android:background="#69BFE7"
         android:paddingLeft="10dp"
         android:text="My Chatting Rooms"
         android:textColor="#FFFFFF"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/chattinghomeRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -105,7 +66,6 @@
         android:id="@+id/chattinghomeRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="1dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,9 +1,13 @@
 package com.example.seouler.Chatting
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.renderscript.Sampler
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -93,7 +97,7 @@ class ChattingMessageActivity : AppCompatActivity(){
             override fun onDataChange(p0: DataSnapshot) {
                 for (data in p0.children){
                     if(roomId == data.child("roomId").value as Long){
-                        chattingMessageHeaderToolbar.title = data.child("title").value.toString()
+                        supportActionBar!!.title = data.child("title").value.toString()
                         break
                     }
                 }
@@ -102,53 +106,68 @@ class ChattingMessageActivity : AppCompatActivity(){
         }
         readRoomNameRef.addListenerForSingleValueEvent((readRoomNameValueEventListener))
 
-        chattingMessageMenuButton.setOnClickListener {
-            var menuPopup = PopupMenu(this, chattingMessageMenuButton)
-            menuPopup.menuInflater.inflate(R.menu.menu_chatting_message, menuPopup.menu)
 
-            menuPopup.setOnMenuItemClickListener {
-                val item = it.itemId
-
-                when(item){
-                    //채팅방 정보 클릭하면 정보 띄워줌
-                    R.id.menuItemRoomInfo -> {
-                        val nextIntent = Intent(this, ChattingInfoActivity::class.java)
-                        nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
-                        nextIntent.putExtra("roomId", intent.extras!!["roomId"] as Long)
-                        ContextCompat.startActivity(this, nextIntent, null)
-                    }
-                    //채팅방 나가기 누르면 DB participation 목록에서 지워주면서 뒤로가기
-                    R.id.menuItemExitRoom -> {
-                        var exitRoomRef = FirebaseDatabase.getInstance().getReference("participation")
-                        var exitRoomValueEventListener = object : ValueEventListener{
-                            override fun onCancelled(p0: DatabaseError) {
-                                TODO("Not yet implemented")
-                            }
-
-                            override fun onDataChange(p0: DataSnapshot) {
-                                for (data in p0.children){
-                                    if(data.child("roomId").value as Long == roomId
-                                        && data.child("userId").value as Long == intent.extras!!["userId"] as Long){
-                                        data.ref.removeValue()
-                                        onBackPressed()
-                                    }
-                                }
-                            }
-
-                        }
-                        exitRoomRef.addListenerForSingleValueEvent(exitRoomValueEventListener)
-                    }
-                }
-                true
-
-
-            }
-            menuPopup.show()
-
-
-        }
     }
 
+    //액션버튼 메뉴 액션바에 집어 넣기
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_chatting_message, menu)
+        return true
+    }
+
+    //액션버튼 클릭 했을 때
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.menuItemRoomInfo -> {
+                //정보 버튼 눌렀을 때
+                val nextIntent = Intent(this, ChattingInfoActivity::class.java)
+                nextIntent.putExtra("userId", intent.extras!!["userId"] as Long)
+                nextIntent.putExtra("roomId", intent.extras!!["roomId"] as Long)
+                ContextCompat.startActivity(this, nextIntent, null)
+                return super.onOptionsItemSelected(item)
+            }
+            R.id.menuItemExitRoom -> {
+                //채팅방 나가기 버튼 눌렀을 때
+                //roomId == 1, 즉 public room이면 나갈 수 없음.
+                var PUBLIC_ROOM_ID : Long = 1
+                if(intent.extras!!["roomId"] as Long == PUBLIC_ROOM_ID){
+                    var builder = AlertDialog.Builder(this)
+                    builder.setMessage("You can't exit from [Public Chat]")
+                    var searchroomDialogListner = object : DialogInterface.OnClickListener{
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                        }
+
+                    }
+                    builder.setPositiveButton("OK", searchroomDialogListner)
+                    builder.show()
+
+                }
+                else {
+                    var exitRoomRef = FirebaseDatabase.getInstance().getReference("participation")
+                    var exitRoomValueEventListener = object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            for (data in p0.children) {
+                                if (data.child("roomId").value as Long == intent.extras!!["roomId"] as Long
+                                    && data.child("userId").value as Long == intent.extras!!["userId"] as Long
+                                ) {
+                                    data.ref.removeValue()
+                                    onBackPressed()
+                                }
+                            }
+                        }
+
+                    }
+                    exitRoomRef.addListenerForSingleValueEvent(exitRoomValueEventListener)
+                }
+                return super.onOptionsItemSelected(item)
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
     fun loadMessage(roomId : Long) : ArrayList<Message>{
         var msgData = ArrayList<Message>()
         var msgRef = FirebaseDatabase.getInstance().getReference("message").orderByChild("timestamp")
