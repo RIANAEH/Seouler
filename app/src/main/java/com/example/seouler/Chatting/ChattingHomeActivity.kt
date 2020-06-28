@@ -28,7 +28,8 @@ class ChattingHomeActivity : AppCompatActivity() {
 
         /* 챗봇 클릭했을 때의 리스너 */
         chatbotCellButton.setOnClickListener {
-
+            val chatBotIntent = Intent(this, ChatBotActivity::class.java)
+            startActivity(chatBotIntent)
         }
 
         /* 채팅방 클릭했을 때의 리스너 */
