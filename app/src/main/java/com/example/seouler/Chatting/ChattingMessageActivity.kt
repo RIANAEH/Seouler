@@ -143,6 +143,7 @@ class ChattingMessageActivity : AppCompatActivity(){
 
                 }
                 else {
+
                     var exitRoomRef = FirebaseDatabase.getInstance().getReference("participation")
                     var exitRoomValueEventListener = object : ValueEventListener {
                         override fun onCancelled(p0: DatabaseError) {
@@ -150,14 +151,37 @@ class ChattingMessageActivity : AppCompatActivity(){
                         }
 
                         override fun onDataChange(p0: DataSnapshot) {
+                            var thisRoomCount = 0
                             for (data in p0.children) {
-                                if (data.child("roomId").value as Long == intent.extras!!["roomId"] as Long
-                                    && data.child("userId").value as Long == intent.extras!!["userId"] as Long
-                                ) {
-                                    data.ref.removeValue()
-                                    onBackPressed()
+                                if (data.child("roomId").value as Long == intent.extras!!["roomId"] as Long){
+                                    thisRoomCount++
+                                    if(data.child("userId").value as Long == intent.extras!!["userId"] as Long){
+                                        data.ref.removeValue()
+                                        thisRoomCount--
+                                    }
                                 }
                             }
+                            if(thisRoomCount == 0){
+                                //마지막으로 퇴장하는 것이면
+
+                                var deleteRoomRef = FirebaseDatabase.getInstance().getReference("chattingRoom")
+                                var deleteRoomValueEventListener = object : ValueEventListener{
+                                    override fun onCancelled(p0: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+                                    override fun onDataChange(p0: DataSnapshot) {
+                                        for(data in p0.children){
+                                            if(intent.extras!!["roomId"] as Long == data.child("roomId").value as Long){
+                                                data.ref.removeValue()
+                                            }
+                                        }
+                                    }
+
+                                }
+                                deleteRoomRef.addListenerForSingleValueEvent(deleteRoomValueEventListener)
+                                Thread.sleep(500)
+                            }
+                            onBackPressed()
                         }
 
                     }
