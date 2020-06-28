@@ -184,4 +184,36 @@ class Recommend_MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
+    override fun onRestart() {
+        super.onRestart()
+        setContentView(R.layout.activity_recommend__main)
+
+        DisplayTask("76", this).execute()
+        DisplayTask("75", this).execute()
+        DisplayTask("80", this).execute()
+        DisplayTask("79", this).execute()
+        DisplayTask("82", this).execute()
+
+        btn_plus_attraction.setOnClickListener {
+            showPlusDialog("Attraction")
+        }
+
+        btn_plus_cultural.setOnClickListener {
+            showPlusDialog("Cultural")
+        }
+
+        btn_plus_accommodation.setOnClickListener {
+            showPlusDialog("Accommodation")
+        }
+
+        btn_plus_shopping.setOnClickListener {
+            showPlusDialog("Shopping")
+        }
+
+        btn_plus_cuisine.setOnClickListener {
+            showPlusDialog("Cuisine")
+        }
+    }
 }
+

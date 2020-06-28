@@ -2,7 +2,7 @@ package com.example.seouler.Recommend
 
 import android.graphics.Bitmap
 
-class ContentItem(val contentid: String?, val firstimage: Bitmap?, val readcount: Int?, val title: String?) {
+class ContentItem(val contentid: String?, val firstimage: String?, val readcount: Int?, val title: String?) {
 
 }
 
@@ -83,3 +83,5 @@ val category_cuisine = map_cuisineCat.keys.toTypedArray()
 var checkItem_cuisine = booleanArrayOf(true, false, false, false, false, false, false, false)
 
 var isFirstOk = true
+
+var countForLike = 0

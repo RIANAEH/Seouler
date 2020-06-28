@@ -34,8 +34,5 @@ class DisplayTask(val contentTypedId: String?, val view: Recommend_MainActivity)
         }
 
         return null
-
-
-
     }
 }

@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.seouler">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <meta-data android:name="com.kakao.sdk.AppKey" android:value="f0b450fb3174218f63c39c6b9633464d"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="f0b450fb3174218f63c39c6b9633464d" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,24 +20,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PlaceLikingActivity"></activity>
+        <activity android:name=".Like.LikeMainActivity"></activity>
+        <activity android:name=".PlaceInfoActivity" />
         <activity android:name=".Search.PlaceDetailActivity" />
         <activity android:name=".Recommend.Recommend_MainActivity" />
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="fullSensor" >
-
+            android:screenOrientation="fullSensor"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".Chatting.ChattingHomeActivity" />
         <activity android:name=".Chatting.ChattingMessageActivity" />
         <activity android:name=".Chatting.CreateRoomAcvitivy" />
@@ -40,14 +42,17 @@
         <activity android:name=".PlanModifyActivity" />
         <activity android:name=".Recycle_MainActivity" />
         <activity android:name=".Exc_Recycle_MainActivity" />
-        <activity android:name=".Weather_MainActivity"/>
-        <activity android:name=".PlaceLikingActivity"
+        <activity android:name=".Weather_MainActivity" />
+        <activity
+            android:name=".PlaceInfoActivity"
             tools:ignore="DuplicateActivity" />
-        <activity android:name=".PlaceDetailIconActivity"/>
-        <activity android:name=".PlaceDetailActivity"
+        <activity android:name=".PlaceDetailIconActivity" />
+        <activity
+            android:name=".PlaceInfoActivity"
             tools:ignore="DuplicateActivity" />
-        <activity android:name=".Search.PlaceDetailIconActivity"/>
-        <activity android:name=".Chatting.ChattingInfoActivity"/>
+        <activity android:name=".Search.PlaceDetailIconActivity" />
+        <activity android:name=".Chatting.ChattingInfoActivity" />
+
         <service
             android:name=".Chatting.FetchAddressIntentService"
             android:exported="false" />
