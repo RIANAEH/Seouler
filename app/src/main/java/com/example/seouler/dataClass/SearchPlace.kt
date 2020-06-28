@@ -1,14 +1,9 @@
 package com.example.seouler.dataClass
 
-
-
-class Place (title : String, dist : String, contentid : String, imgUrl : String, isImgNull : Boolean) {
+class SearchPlace (title : String, addr : String, contentid : String, imgUrl : String, isImgNull : Boolean){
     val contentid : String = contentid
     val imgUrl = imgUrl
     val title: String = title
-    val dist: String = dist
+    val addr: String = addr
     val isImgNull = isImgNull
-
-
 }
-
