@@ -48,7 +48,7 @@
         <activity
             android:name=".PlaceInfoActivity"
             tools:ignore="DuplicateActivity" />
-        <activity android:name=".PlaceDetailIconActivity" />
+        <activity android:name=".Chatting.ChatbotWebViewActivity" />
         <activity
             android:name=".PlaceInfoActivity"
             tools:ignore="DuplicateActivity" />

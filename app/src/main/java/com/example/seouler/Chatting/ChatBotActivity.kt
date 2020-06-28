@@ -43,20 +43,29 @@ class ChatBotActivity : AppCompatActivity() {
 
         // 테스트용 버튼
         ChatBotTestButton.setOnClickListener {
-            onSeoulerChatBotLike()
+            onSeoulerChatBotCurrentPlace()
         }
     }
 
     private fun onSeoulerChatBotCurrentPlace() {
         // 아직 미구현
+        val intent = Intent(this, ChatbotWebViewActivity::class.java)
+        val locationX = 37.5131171
+        val locationY = 126.9449039
+        val url = "https://www.google.co.kr/maps/@" + locationX.toString() + "," + locationY.toString() + ",17.75z?hl=ko"
+        intent.putExtra("url", url)
+        startActivity(intent)
     }
 
     private fun onSeoulerChatBotDestinationPlace() {
         // 아직 미구현
+        val intent = Intent(this, ChatbotWebViewActivity::class.java)
+        //intent.putExtra("locationX", )
+        //intent.putExtra("locationY", )
+        startActivity(intent)
     }
 
     private fun onSeoulerChatBotExchange() {
-        // 구현 완료
         val go_to_exc_intent = Intent(this, Exc_Recycle_MainActivity::class.java)
         var rate_async = Rate_Async(this)
         rate_async.execute()
@@ -71,7 +80,6 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotWeather() {
-        // 구현 완료
         val WeatherDetailPreIntent = Intent(this, Weather_MainActivity::class.java)
         val weather_async = Weather_Async(this, WeatherDetailPreIntent, 37.5642135, 127.0016985) // API
         weather_async.execute()
