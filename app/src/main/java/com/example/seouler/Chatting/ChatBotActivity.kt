@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import com.example.seouler.*
 import com.example.seouler.Like.LikeMainActivity
+import com.example.seouler.dataClass.Location
 import kotlinx.android.synthetic.main.activity_chatbot.*
 import com.example.seouler.dataClass.WeatherDaily
 import org.json.JSONArray
@@ -48,13 +49,13 @@ class ChatBotActivity : AppCompatActivity() {
     }
 
     private fun onSeoulerChatBotCurrentPlace() {
-        // 아직 미구현
-        val intent = Intent(this, ChatbotWebViewActivity::class.java)
-        val locationX = 37.5131171
-        val locationY = 126.9449039
-        val url = "https://www.google.co.kr/maps/@" + locationX.toString() + "," + locationY.toString() + ",17.75z?hl=ko"
-        intent.putExtra("url", url)
-        startActivity(intent)
+        val webIntent = Intent(this, ChatbotWebViewActivity::class.java)
+        val url = "https://www.google.co.kr/maps/@" + intent.extras!!["locationY"].toString() + "," + intent.extras!!["locationX"].toString() + ",17.75z?hl=ko"
+        webIntent.putExtra("url", url)
+
+        Thread.sleep(1000)
+
+        startActivity(webIntent)
     }
 
     private fun onSeoulerChatBotDestinationPlace() {
