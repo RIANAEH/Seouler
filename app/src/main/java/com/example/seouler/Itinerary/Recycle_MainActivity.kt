@@ -132,7 +132,7 @@ class Recycle_MainActivity : AppCompatActivity() {
                     }
                 }
                 if(!check){
-                    nFbItUsers.child(uid).setValue(null)
+                    nFbItUsers.child(uid).setValue("")
                     check = true
                 }
 
