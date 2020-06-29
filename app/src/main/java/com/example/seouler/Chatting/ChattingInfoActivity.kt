@@ -116,6 +116,7 @@ class ChattingInfoActivity : AppCompatActivity() {
                     }
                 }
                 adapter.listData = roomPartNameList
+                chattingInfoParticipantsTitleTextView.text = "Participants(${roomPartNameList.size})"
                 adapter.notifyDataSetChanged()
             }
 
