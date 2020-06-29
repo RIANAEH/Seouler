@@ -26,6 +26,8 @@ class ChattingMessageActivity : AppCompatActivity(){
     var scrollingToBottom : Boolean = false
     var messageList : ArrayList<Message> = ArrayList()
     var adapter : ChattingMessageAdapter? = null
+    var userCount = 0
+    var roomTitle = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chattingmessage)
@@ -41,7 +43,7 @@ class ChattingMessageActivity : AppCompatActivity(){
          */
         val roomId : Long = intent.extras!!["roomId"] as Long
         messageList = loadMessage(roomId)
-
+        loadUserCount()
         adapter = ChattingMessageAdapter(
             this,
             messageList
@@ -97,14 +99,15 @@ class ChattingMessageActivity : AppCompatActivity(){
             override fun onDataChange(p0: DataSnapshot) {
                 for (data in p0.children){
                     if(roomId == data.child("roomId").value as Long){
-                        supportActionBar!!.title = data.child("title").value.toString()
+                        roomTitle = data.child("title").value.toString()
+                        supportActionBar!!.title = "${data.child("title").value.toString()}(${userCount})"
                         break
                     }
                 }
             }
 
         }
-        readRoomNameRef.addListenerForSingleValueEvent((readRoomNameValueEventListener))
+        readRoomNameRef.addListenerForSingleValueEvent(readRoomNameValueEventListener)
 
 
     }
@@ -234,6 +237,27 @@ class ChattingMessageActivity : AppCompatActivity(){
         }
         msgRef.addValueEventListener(msgEventListener)
         return msgData
+    }
+    fun loadUserCount(){
+
+        var partRef = FirebaseDatabase.getInstance().getReference("participation")
+        var partValueEventListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                userCount = 0
+                for(data in p0.children){
+                    if(intent.extras!!["roomId"] as Long == data.child("roomId").value){
+                        userCount++
+                    }
+                }
+                supportActionBar!!.title = "${roomTitle}(${userCount})"
+            }
+
+        }
+        partRef.addValueEventListener(partValueEventListener)
     }
 
 }
